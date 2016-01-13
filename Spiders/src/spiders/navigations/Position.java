@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spiders.model.navigation;
+package spiders.navigations;
 
-import java.awt.Point;
 import java.util.HashMap;
 
 /**
- * Позиция узел
+ * Position
  * @author anhcx
  */
 public class Position {

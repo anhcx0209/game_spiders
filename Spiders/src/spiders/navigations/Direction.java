@@ -1,4 +1,4 @@
-package spiders.model.navigation;
+package spiders.navigations;
 
 import java.util.Random;
 
