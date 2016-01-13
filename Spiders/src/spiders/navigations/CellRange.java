@@ -1,19 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package spiders.model.navigation;
+package spiders.navigations;
 
 /**
- * Допустимый дипазон узлах
+ * Cell ranges
  * @author anhcx
  */
 public class CellRange {
-   // ------------------ Возможные значения ------------------
+   // ------------------ All inrange value  ------------------
     private  int _min = 0;
     private  int _max = 0;
 
+    /**
+     * Constructor
+     * @param min - minimum coordinate value
+     * @param max - maximum coordinate value
+     */
     public CellRange(int min, int max){
         if(min < 0)     min = 0;
         if(max < min)   max = min;
@@ -22,24 +22,45 @@ public class CellRange {
         _max = max;
     }
     
+    /**
+     * Getter for min
+     * @return minimum coordinate value
+     */
     public int min(){
         return _min;
     }
 
+    /**
+     * Getter for max
+     * @return - maximum coordinate value
+     */
     public int max(){
         return _max;
     }
 
+    /**
+     * Get length of range
+     * @return length of range
+     */
     public int length(){
         return _max - _min + 1;
     }
     
+    /**
+     * Check pair min - max is valid range or not
+     * @param min - minimum coordinate value
+     * @param max - maximum coordinate value
+     * @return true - valid, false invalid
+     */
     public static boolean isValidRange(int min, int max) {
       return min > 0 && max >= min;  
     }
 
-    // ------------------ Принадлежность диапазону ------------------
-    
+    /**
+     * Check if value in range or not
+     * @param val - value
+     * @return true - in range, false out range
+     */
     public boolean contains(int val){
        return val >= _min && val <= _max;
     } 
