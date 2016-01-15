@@ -30,6 +30,7 @@ public class Spiders extends JFrame {
     private JLabel _bestResultInfo = new JLabel();
     private JLabel _stepInfo = new JLabel();
     private JPanel _content = new JPanel();
+    private GamePanel _panel = new GamePanel();
     
     // ----------- MENU BAR ------------------------
     private JMenuBar _menu = null;
@@ -108,6 +109,7 @@ public class Spiders extends JFrame {
         _controlPanel.add(createInfoPanel());
         _content.setLayout(new BorderLayout());
         _content.add(_controlPanel, BorderLayout.NORTH);
+        _content.add(_panel, BorderLayout.CENTER);
         setContentPane(_content);
         
         // add menu bar
