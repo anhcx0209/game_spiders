@@ -11,4 +11,15 @@ package spiders.model;
  */
 public class GameModel {
     
+    private CobWeb _field;
+    
+    public CobWeb field() {
+        return _field;
+    }
+    
+    public GameModel() {
+        _field = new CobWeb();
+        _field.setSize(6);
+    }
+    
 }
