@@ -6,6 +6,7 @@
 package spiders.figure;
 
 import spiders.model.CobWeb;
+import spiders.navigations.Direction;
 
 /**
  *

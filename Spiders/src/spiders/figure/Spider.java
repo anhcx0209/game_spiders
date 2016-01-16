@@ -45,6 +45,35 @@ public class Spider extends CobWebObject  {
         _life += amount;
     }
     
+    /**
+     * Spider move.
+     * @param direct direction to moving.
+     */
     public void move(Direction direct) {
+        if (this.life() > 0) {
+            if (moveIsPossible(direct)) {
+                Position newPos = position().next(direct);
+                
+                setPosition(newPos);
+                decreaseLife(1);
+                
+                // Лог
+                System.err.println("Spider moved to:" + position().row() + "," +
+                position().column());
+                
+            }
+        }
+    }
+    
+    private boolean moveIsPossible(Direction direct) {
+        Position newPos = position().next(direct);
+        if (newPos.isValid()) {
+            boolean haveCom = cobweb().have(TypeObject.COMPUTER, newPos);
+            boolean havePlayer = cobweb().have(TypeObject.PLAYER, newPos);
+            if (!haveCom && !havePlayer)
+                return true;
+        }
+        
+        return false;
     }
 }
