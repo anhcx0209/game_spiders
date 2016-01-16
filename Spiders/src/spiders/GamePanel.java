@@ -22,8 +22,8 @@ public class GamePanel extends JPanel implements KeyListener {
     /**
      * Constructor
      */
-    public GamePanel() {
-        _model = new GameModel();
+    public GamePanel(GameModel gm) {
+        _model = gm;
         
         int size = 2 * GAP + CELL_SIZE * (_model.field().size() - 1);
         
