@@ -20,15 +20,19 @@ public class CobWeb {
         _mark = new boolean[_size + 1][_size + 1];
     }
     
+    /**
+     * @return size of cobweb.
+     */
     public int size() {
         return _size;
     }
     
+    /**
+     * Generate cobweb.
+     */
     public CobWeb() {
         
     }
-    
-    
     
     // ------------------- try to capture some food ----------------------
     /**
@@ -58,6 +62,10 @@ public class CobWeb {
         return ret;
     }
     
+    /**
+     * Get a free position on web.
+     * @return free position or null if cobweb doesn't have any free position.
+     */
     public Position getFreePosition() {
         ArrayList<Position> freePos = freePosition();
         
@@ -73,6 +81,11 @@ public class CobWeb {
     // ------------------- objects on cobweb --------
     ArrayList<CobWebObject> _objects = new ArrayList<>();
     
+    /**
+     * Add more object to cobweb.
+     * @param obj object will be added.
+     * @return true if successful or false if not.
+     */
     public boolean addObject(CobWebObject obj) {
         if (obj.position() == null)
             return false;
@@ -82,6 +95,10 @@ public class CobWeb {
         return true;
     }
     
+    /**
+     * Remove object from cobweb.
+     * @param obj object will be removed.
+     */
     public void removeObject(CobWebObject obj) {
         if (_objects.contains(obj)) {
             _objects.remove(obj);
@@ -90,10 +107,18 @@ public class CobWeb {
             
     }
     
+    /**
+     * @return all objects on cobweb.
+     */
     public ArrayList<CobWebObject> objects() {
         return _objects;
     }
     
+    /**
+     * Return exactly list of objects have a same type.
+     * @param type type of list.
+     * @return list of objects, which have same type.
+     */
     public ArrayList<CobWebObject> objects(TypeObject type) {
         ArrayList<CobWebObject> ret = new ArrayList<>();
         for (CobWebObject e : _objects) {
@@ -102,5 +127,25 @@ public class CobWeb {
             }
         }
         return ret;
+    }
+    
+    // ----------------- check what have in a position -------------
+    
+    /**
+     * Check existing of object in position.
+     * @param type - type of object
+     * @param pos - position
+     * @return true if exist object have type in position, false if not.
+     */
+    public boolean have(TypeObject type, Position pos) {
+        if (_mark[pos.row()][pos.column()] == true) {
+            for (CobWebObject obj : _objects) {
+                if (obj.position() == pos && obj.type() == type) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 }
