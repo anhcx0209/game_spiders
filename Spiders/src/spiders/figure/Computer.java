@@ -5,7 +5,11 @@
  */
 package spiders.figure;
 
+import java.util.ArrayList;
 import spiders.model.CobWeb;
+import spiders.model.CobWebObject;
+import spiders.navigations.Direction;
+import spiders.navigations.Position;
 
 /**
  *
@@ -16,6 +20,28 @@ public class Computer extends Spider {
     public Computer(CobWeb cw) {
         super(cw);
         _type = TypeObject.COMPUTER;
+    }
+    
+    // AI when be here
+    public Direction think() {
+        Position myPos = position();
+        Position bestPos = null;
+        int min = 999999;
+        // get all object is food
+        ArrayList<CobWebObject> listFood = cobweb().objects(TypeObject.FOOD);
+        
+        // find the min lenght
+        for (CobWebObject e : listFood) {
+            int cur_length = Position.lengthPath(myPos, e.position());
+            if (cur_length < min) 
+                bestPos = e.position();
+        }
+        
+        // get direction to best pos
+        if (bestPos != null) {
+            return Position.wayTo(myPos, bestPos);
+        } else
+            return Direction.randomDirection();
     }
     
 }
