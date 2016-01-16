@@ -30,6 +30,7 @@ public abstract class CobWebObject {
     
     public CobWebObject(CobWeb cw) {
         _cobweb = cw;
+        _position = null;
     }
     
     public CobWeb cobweb() {
@@ -44,13 +45,17 @@ public abstract class CobWebObject {
     } 
     
     // --------------- Position ---------------
-    protected Position _position;
+    protected Position _position = null;
     
     public Position position() {
         return _position;
     }
     
     public void setPosition(Position pos) {
+        if (_position != null)
+            cobweb()._mark[_position.row()][_position.column()]--;
+        
         _position = pos;
+        cobweb()._mark[_position.row()][_position.column()]++;
     }
 }
