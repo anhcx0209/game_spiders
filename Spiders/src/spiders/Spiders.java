@@ -72,20 +72,21 @@ public class Spiders extends JFrame {
                 "Choose one level", "Game Level",  JOptionPane.INFORMATION_MESSAGE, null,
                 possibleValues, possibleValues[0]);
                 
-                if (selectedValue.equals("Easy")) {
-                    _panel = new GamePanel(new GameModel(Level.easy()));
+                if (selectedValue != null) {
+                    if (selectedValue.equals("Easy")) {
+                        _panel = new GamePanel(new GameModel(Level.easy()));
+                    }
+
+                    if (selectedValue.equals("Medium")) {
+                        _panel = new GamePanel(new GameModel(Level.medium()));
+                    }
+
+                    if (selectedValue.equals("Hard")) {
+                        _panel = new GamePanel(new GameModel(Level.hard()));
+                    }
+
+                    repaintField();
                 }
-                
-                if (selectedValue.equals("Medium")) {
-                    _panel = new GamePanel(new GameModel(Level.medium()));
-                }
-                    
-                
-                if (selectedValue.equals("Hard")) {
-                    _panel = new GamePanel(new GameModel(Level.hard()));
-                }
-                
-                repaintField();
             }
             
             if ("high score".equals(command)) {
