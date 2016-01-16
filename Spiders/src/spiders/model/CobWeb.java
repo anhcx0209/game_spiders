@@ -2,6 +2,7 @@ package spiders.model;
 
 import java.util.ArrayList;
 import java.util.Random;
+import spiders.figure.SpiderFood;
 import spiders.model.CobWebObject.TypeObject;
 import spiders.navigations.Position;
 
@@ -27,6 +28,21 @@ public class CobWeb {
         
     }
     
+    
+    
+    // ------------------- try to capture some food ----------------------
+    /**
+     * Capture food form a mount of food.
+     * @param outFood - food outside the web.
+     */
+    public void captureMoreFood(ArrayList<SpiderFood> outFood) {
+        for (SpiderFood sf : outFood) {
+            if (sf.failIntoWeb()) {
+                addObject(sf);
+            }
+        }
+    }
+    
     // ------------------- get free position --------
     boolean[][] _mark;
     
@@ -47,7 +63,7 @@ public class CobWeb {
         
         if (freePos.size() > 0) {
             Random rand = new Random();
-            int n = rand.nextInt(_size * _size) + 1;
+            int n = rand.nextInt(freePos.size());
             return freePos.get(n);
         }
         
