@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class Level {
     
     int _baseSize;
+    int _numberOfComputer;
     
     /**
      * create a hard level
@@ -26,7 +27,7 @@ public class Level {
     public static Level hard() {
         Level l = new Level();
         l._baseSize = 15;
-        
+        l._numberOfComputer = 3;
         return l;
     }
     
@@ -38,7 +39,7 @@ public class Level {
     public static Level easy() {
         Level l = new Level();
         l._baseSize = 6;
-        
+        l._numberOfComputer = 1;
         return l;
     }
     
@@ -50,7 +51,7 @@ public class Level {
     public static Level medium() {
         Level l = new Level();
         l._baseSize = 10;
-        
+        l._numberOfComputer = 2;
         return l;
     }
     
