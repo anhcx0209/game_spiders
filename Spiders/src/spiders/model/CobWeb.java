@@ -17,7 +17,10 @@ public class CobWeb {
     
     CobWeb(int s) {
         _size = s;
-        _mark = new boolean[_size + 1][_size + 1];
+        _mark = new int[_size + 1][_size + 1];
+        for (int i = 0; i < _size + 1; i++)
+            for (int j = 0; j < _size + 1; j++)
+                _mark[i][j] = 0;
     }
     
     /**
@@ -25,13 +28,6 @@ public class CobWeb {
      */
     public int size() {
         return _size;
-    }
-    
-    /**
-     * Generate cobweb.
-     */
-    public CobWeb() {
-        
     }
     
     // ------------------- try to capture some food ----------------------
@@ -48,13 +44,13 @@ public class CobWeb {
     }
     
     // ------------------- get free position --------
-    boolean[][] _mark;
+    int[][] _mark;
     
     private ArrayList<Position> freePosition() {
         ArrayList<Position> ret = new ArrayList<>();
         for (int i = 1; i < _size + 1; i++) {
             for (int j = 1; j < _size + 1; j++) {
-                if (_mark[i][j] == false)
+                if (_mark[i][j] == 0)
                     ret.add(new Position(i, j));
             }
         }
@@ -91,7 +87,7 @@ public class CobWeb {
             return false;
         
         _objects.add(obj);
-        _mark[obj.position().row()][obj.position().column()] = true;
+        _mark[obj.position().row()][obj.position().column()]++;
         return true;
     }
     
@@ -102,7 +98,8 @@ public class CobWeb {
     public void removeObject(CobWebObject obj) {
         if (_objects.contains(obj)) {
             _objects.remove(obj);
-            _mark[obj.position().row()][obj.position().column()] = false;
+            
+            _mark[obj.position().row()][obj.position().column()]--;
         }
             
     }
@@ -138,14 +135,29 @@ public class CobWeb {
      * @return true if exist object have type in position, false if not.
      */
     public boolean have(TypeObject type, Position pos) {
-        if (_mark[pos.row()][pos.column()] == true) {
+        if (_mark[pos.row()][pos.column()] > 0) {
             for (CobWebObject obj : _objects) {
-                if (obj.position() == pos && obj.type() == type) {
+                if (obj.position().equals(pos) && obj.type() == type) {
                     return true;
                 }
             }
         }
         
         return false;
+    }
+    
+    /**
+     * Get food from a position.
+     * @param pos position
+     * @return food in position
+     */
+    public SpiderFood getFood(Position pos) {
+        for (CobWebObject obj : _objects) {
+            if (obj.position().equals(pos) && obj.type() == TypeObject.FOOD) {
+                return (SpiderFood)obj;
+            }
+        }
+        
+        return null;
     }
 }
