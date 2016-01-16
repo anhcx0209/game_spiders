@@ -18,6 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import spiders.events.GameEventListener;
 import spiders.model.GameModel;
 import spiders.model.Level;
 
@@ -105,8 +106,13 @@ public class Spiders extends JFrame {
         _content.add(_controlPanel, BorderLayout.NORTH);
         _content.add(_panel, BorderLayout.CENTER);
         
+        // add listener to each spider
+        _panel.gameModel().player().addGEL(new RepaintByAction());
+        
         _content.revalidate();
         pack();
+        
+        _panel.setFocusable(true);
     }
     
     // ------------- GAME INFO PANEL ----------------------
@@ -144,6 +150,9 @@ public class Spiders extends JFrame {
         _content.add(_panel, BorderLayout.CENTER);
         setContentPane(_content);
         
+        // add listener to each player
+        _panel.gameModel().player().addGEL(new RepaintByAction());
+        
         // add menu bar
         createMenu();
         setJMenuBar(_menu);
@@ -171,4 +180,28 @@ public class Spiders extends JFrame {
         });
     }
     
+    
+    // ----------------------- GAME EVENT LISTENER ------------------
+    public class RepaintByAction implements GameEventListener {
+
+        @Override
+        public void positionChanged() {
+            _stepInfo.setText("" + _panel.gameModel().step());
+            _panel.repaint();
+        }
+
+        @Override
+        public void gameOver() {
+            String s = (String)JOptionPane.showInputDialog(
+                    null,
+                    "Your score: " + _panel.gameModel().step() + "\n" +
+                    "Enter your name:\n",
+                    "Game Over",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    "new player");
+        }
+        
+    }
 }
