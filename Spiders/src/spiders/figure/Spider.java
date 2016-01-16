@@ -18,6 +18,7 @@ public class Spider extends CobWebObject  {
      */
     public Spider(CobWeb cw) {
         super(cw);
+        _position = cw.getFreePosition();
     }
     
     // ------------------- life ----------------
