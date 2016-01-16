@@ -1,12 +1,10 @@
 package spiders.model;
 
 import java.util.ArrayList;
-import java.util.Random;
 import spiders.events.GameEventListener;
 import spiders.events.PlayerActionListener;
 import spiders.figure.Computer;
 import spiders.figure.Player;
-import spiders.figure.Spider;
 import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
@@ -58,7 +56,7 @@ public class GameModel implements PlayerActionListener {
             _field.addObject(com);
         }
             
-        // create food 
+        // create food
         _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
     }
     
@@ -70,15 +68,23 @@ public class GameModel implements PlayerActionListener {
     }
     
     private void checkComDie() {
-        for (Computer com : _coms) {
-            if (com.life() == 0) {
-                field().removeObject(com);
+        boolean[] trash = new boolean[_coms.size()];
+        
+        for (int i = 0; i < _coms.size(); i++) {
+            if (_coms.get(i).life() == 0) {
+                field().removeObject(_coms.get(i));
+                trash[i] = true;
                 
                 // fire trigger to game panel
                 for (GameEventListener gel : _gameListeners)
                     gel.positionChanged();
             }
         }
+        
+        // remove from _coms
+        for (int i = trash.length - 1; i >= 0; i--)
+            if (trash[i])
+                _coms.remove(i);
     }
     
     // ------------------ PLAYER -------------------------
@@ -118,20 +124,20 @@ public class GameModel implements PlayerActionListener {
         // make computer move
         for (Computer com : _coms) {
             Direction dir = com.think();
-            com.move(dir);
+            while (!com.move(dir)) {
+                dir = com.think();
+            }
         }
         
-        // generate more food
-        Random rand = new Random();
-        int n = rand.nextInt(100);
-        if (n % 10 == 5 || n % 10 == 3) {
-            // create food 
-            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
-            
-            // fire trigger to game panel
-            for (GameEventListener gel : _gameListeners)
-                gel.positionChanged();
-        }
+        
+//        // generate more food
+//        if (_level.spin() && field().foodPerSpider() < 1.2) {
+//            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+//            
+//            // fire trigger to game panel
+//            for (GameEventListener gel : _gameListeners)
+//                gel.positionChanged();
+//        }
         
         // check computer die and remove it
         checkComDie();
