@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package spiders.model;
 
 import java.util.ArrayList;
@@ -28,12 +23,19 @@ public class GameModel {
     }
     
     /**
+     * @return level of game
+     */
+    public Level level() {
+        return _level;
+    }
+    
+    /**
      * create a game model with pre-defined level
      * level = hard, medium and easy
      * @param l pre-define level for game model
      */
     public GameModel(Level l) {
-        _field = new CobWeb(l._baseSize);
+        _field = new CobWeb(l.baseSize());
         _level = l;
         
         // create new player
@@ -41,12 +43,14 @@ public class GameModel {
         _field.addObject(_player);
         
         // create computer 
-        for (int i = 0; i < _level._numberOfComputer; i++) {
+        for (int i = 0; i < _level.numberCom(); i++) {
             Computer com = new Computer(_field);
             _coms.add(com);
             _field.addObject(com);
         }
             
+        // create food 
+        _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
     }
     
     // ------------------ COMPUTER -------------------------
@@ -62,5 +66,8 @@ public class GameModel {
     public Player player() {
         return _player;
     }
+    
+    // ------------------- FOOD FACTORY ------------------
+    private FoodFactory _foodFact = new FoodFactory(this);
     
 }
