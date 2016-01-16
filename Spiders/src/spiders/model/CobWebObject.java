@@ -15,7 +15,7 @@ public abstract class CobWebObject {
      * RISK - drop rain and rock, what is harmful for spider
      */
     public enum TypeObject {
-        SPIDER, FOOD, RISK
+        COMPUTER, PLAYER, FOOD, RAIN, STONE
     }
     
     // --------------------- Type ---------------
@@ -44,7 +44,7 @@ public abstract class CobWebObject {
     } 
     
     // --------------- Position ---------------
-    Position _position;
+    protected Position _position;
     
     public Position position() {
         return _position;
