@@ -79,7 +79,7 @@ public class Level {
      */
     public static Level easy() {
         Level l = new Level();
-        l._baseSize = 6;
+        l._baseSize = 10;
         l._numberOfComputer = 2;
         l._numberBug = 6;
         l.makeFactor(N_FF_EASY);
