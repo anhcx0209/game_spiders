@@ -98,10 +98,27 @@ public class CobWeb {
     public void removeObject(CobWebObject obj) {
         if (_objects.contains(obj)) {
             _objects.remove(obj);
-            
             _mark[obj.position().row()][obj.position().column()]--;
         }
-            
+    }
+    
+    /**
+     * @return rate food per spider
+     */
+    public double foodPerSpider() {
+        double nFood = 0;
+        double nSpider = 0;
+        for (CobWebObject e : _objects) {
+            if (e.type() == TypeObject.FOOD) {
+                nFood = nFood + 1;
+            }
+            if (e.type() == TypeObject.COMPUTER) {
+                nSpider = nSpider + 1;
+            }
+            nSpider = nSpider + 1;    
+        }
+        
+        return nFood / nSpider;
     }
     
     /**
@@ -135,7 +152,7 @@ public class CobWeb {
      * @return true if exist object have type in position, false if not.
      */
     public boolean have(TypeObject type, Position pos) {
-        if (_mark[pos.row()][pos.column()] > 0) {
+        if (pos.isValid()) {
             for (CobWebObject obj : _objects) {
                 if (obj.position().equals(pos) && obj.type() == type) {
                     return true;
