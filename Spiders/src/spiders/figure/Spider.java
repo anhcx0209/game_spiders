@@ -1,5 +1,8 @@
 package spiders.figure;
 
+import java.util.ArrayList;
+import spiders.events.GameEventListener;
+import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
 import spiders.navigations.Direction;
@@ -54,6 +57,10 @@ public class Spider extends CobWebObject  {
             if (moveIsPossible(direct)) {
                 Position newPos = position().next(direct);
                 
+                if (cobweb().have(TypeObject.FOOD, newPos)) {
+                    // eating here
+                }
+                
                 setPosition(newPos);
                 decreaseLife(1);
                 
@@ -61,6 +68,9 @@ public class Spider extends CobWebObject  {
                 System.err.println("Spider moved to:" + position().row() + "," +
                 position().column());
                 
+                for (GameEventListener gel : _gameListeners) {
+                    gel.positionChanged();
+                }
             }
         }
     }
@@ -75,5 +85,16 @@ public class Spider extends CobWebObject  {
         }
         
         return false;
+    }
+    
+    // ------------------- GAME LISTENER -----------------------------
+    private ArrayList<GameEventListener> _gameListeners = new ArrayList<>();
+    
+    public void addGEL(GameEventListener l) {
+        _gameListeners.add(l);
+    }
+    
+    public void removeGEL(GameEventListener l) {
+        _gameListeners.remove(l);
     }
 }
