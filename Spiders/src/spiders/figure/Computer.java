@@ -6,6 +6,7 @@
 package spiders.figure;
 
 import java.util.ArrayList;
+import java.util.Random;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
 import spiders.navigations.Direction;
@@ -39,9 +40,12 @@ public class Computer extends Spider {
         
         // get direction to best pos
         if (bestPos != null) {
+            System.err.println("Tim duoc muc tieu");
             return Position.wayTo(myPos, bestPos);
-        } else
+        } else {
+            System.err.println("Tra ve random");
             return Direction.randomDirection();
+        }
     }
     
 }

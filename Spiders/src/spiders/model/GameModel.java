@@ -123,21 +123,26 @@ public class GameModel implements PlayerActionListener {
     public void playerMoved() {
         // make computer move
         for (Computer com : _coms) {
-            Direction dir = com.think();
-            while (!com.move(dir)) {
-                dir = com.think();
+            boolean ok = false;
+            while (!ok) {
+                Direction dir = com.think();
+                if (com.move(dir))
+                    ok = true;
+                else 
+                    dir = Direction.randomDirection();
+                System.err.println(dir);
             }
         }
         
         
-//        // generate more food
-//        if (_level.spin() && field().foodPerSpider() < 1.2) {
-//            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
-//            
-//            // fire trigger to game panel
-//            for (GameEventListener gel : _gameListeners)
-//                gel.positionChanged();
-//        }
+        // generate more food
+        if (_level.spin() && field().foodPerSpider() < 1.2) {
+            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+            
+            // fire trigger to game panel
+            for (GameEventListener gel : _gameListeners)
+                gel.positionChanged();
+        }
         
         // check computer die and remove it
         checkComDie();
