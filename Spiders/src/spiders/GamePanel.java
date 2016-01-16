@@ -47,6 +47,10 @@ public class GamePanel extends JPanel implements KeyListener {
         addKeyListener(this);    
     }
     
+    public GameModel gameModel() {
+        return _model;
+    }
+    
     // --------------------SIZE----------------------------
     private static final int CELL_SIZE = 50;
     private static final int GAP = 30;
