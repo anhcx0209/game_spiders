@@ -50,8 +50,9 @@ public class Spider extends CobWebObject  {
     /**
      * Spider move.
      * @param direct direction to moving.
+     * @return moved or not
      */
-    public void move(Direction direct) {
+    public boolean move(Direction direct) {
         if (this.life() > 0) {
             if (moveIsPossible(direct)) {
                 Position newPos = position().next(direct);
@@ -72,8 +73,10 @@ public class Spider extends CobWebObject  {
                 for (GameEventListener gel : _gameListeners) {
                     gel.positionChanged();
                 }
+                return true;
             }
         }
+        return false;
     }
     
     private boolean moveIsPossible(Direction direct) {
