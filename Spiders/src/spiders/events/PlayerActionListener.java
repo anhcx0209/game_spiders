@@ -11,7 +11,6 @@ import java.util.EventListener;
  *
  * @author anhcx
  */
-public interface SpiderActionListener extends EventListener {
-    public void spiderMoved();
-    public void spiderAte();
+public interface PlayerActionListener extends EventListener {
+    public void playerMoved();
 }
