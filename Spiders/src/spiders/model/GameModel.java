@@ -5,6 +5,7 @@
  */
 package spiders.model;
 
+import spiders.figure.Player;
 import spiders.figure.Spider;
 
 /**
@@ -34,12 +35,15 @@ public class GameModel {
         _level = l;
         
         // create new player
-        _player = new Spider(_field);
-        
+        _player = new Player(_field);
+        _field.addObject(_player);
     }
     
     // ------------------ PLAYER -------------------------
-    private Spider _player;
+    private Player _player;
     
+    public Player player() {
+        return _player;
+    }
     
 }
