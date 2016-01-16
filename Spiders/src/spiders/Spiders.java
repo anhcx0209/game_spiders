@@ -156,6 +156,8 @@ public class Spiders extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
+        
+        _panel.setFocusable(true);
     }
     
     /**
