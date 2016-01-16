@@ -1,11 +1,13 @@
 package spiders.model;
 
 import java.util.ArrayList;
+import java.util.Random;
 import spiders.events.GameEventListener;
 import spiders.events.PlayerActionListener;
 import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Spider;
+import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
 /**
@@ -67,11 +69,31 @@ public class GameModel implements PlayerActionListener {
         return _coms;
     }
     
+    private void checkComDie() {
+        for (Computer com : _coms) {
+            if (com.life() == 0) {
+                field().removeObject(com);
+                
+                // fire trigger to game panel
+                for (GameEventListener gel : _gameListeners)
+                    gel.positionChanged();
+            }
+        }
+    }
+    
     // ------------------ PLAYER -------------------------
     private Player _player;
     
     public Player player() {
         return _player;
+    }
+    
+    private void checkGameOver() {
+        // check game over
+        if (player().life() == 0) {
+            for (GameEventListener gel : _gameListeners)
+                gel.gameOver();
+        }
     }
     
     // ------------------- FOOD FACTORY ------------------
@@ -93,10 +115,27 @@ public class GameModel implements PlayerActionListener {
 
     @Override
     public void playerMoved() {
-        if (player().life() == 0) {
-            for (GameEventListener gel : _gameListeners)
-                gel.gameOver();
+        // make computer move
+        for (Computer com : _coms) {
+            Direction dir = com.think();
+            com.move(dir);
         }
+        
+        // generate more food
+        Random rand = new Random();
+        int n = rand.nextInt(100);
+        if (n % 10 == 5 || n % 10 == 3) {
+            // create food 
+            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+            
+            // fire trigger to game panel
+            for (GameEventListener gel : _gameListeners)
+                gel.positionChanged();
+        }
+        
+        // check computer die and remove it
+        checkComDie();
+        checkGameOver();
     }
     
     // ------------------- GAME LISTENER -----------------------------
