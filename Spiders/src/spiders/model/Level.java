@@ -16,8 +16,30 @@ import java.util.ArrayList;
  */
 public class Level {
     
-    int _baseSize;
-    int _numberOfComputer;
+    private int _baseSize;
+    private int _numberOfComputer;
+    private int _numberBug;
+    
+    /**
+     * @return number of bug must be generate per time.
+     */
+    public int numberBug() {
+        return _numberBug;
+    }
+    
+    /**
+     * @return number of computer in start of game
+     */
+    public int numberCom() {
+        return _numberOfComputer;
+    }
+    
+    /**
+     * @return size of game field
+     */
+    public int baseSize() {
+        return _baseSize;
+    }
     
     /**
      * create a hard level
@@ -26,8 +48,9 @@ public class Level {
      */
     public static Level hard() {
         Level l = new Level();
-        l._baseSize = 15;
+        l._baseSize = 12;
         l._numberOfComputer = 3;
+        l._numberBug = 20;
         return l;
     }
     
@@ -39,7 +62,8 @@ public class Level {
     public static Level easy() {
         Level l = new Level();
         l._baseSize = 6;
-        l._numberOfComputer = 1;
+        l._numberOfComputer = 2;
+        l._numberBug = 6;
         return l;
     }
     
@@ -52,6 +76,7 @@ public class Level {
         Level l = new Level();
         l._baseSize = 10;
         l._numberOfComputer = 2;
+        l._numberBug = 8;
         return l;
     }
     
