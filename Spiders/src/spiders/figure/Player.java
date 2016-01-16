@@ -24,11 +24,11 @@ public class Player extends Spider {
     
     
     public void playerMove(Direction dir) {
-        move(dir);
-        
-        // fire event to game model
-        for (PlayerActionListener pal : _playerListeners) 
-            pal.playerMoved();
+        if (move(dir)) {
+            // fire event to game model
+            for (PlayerActionListener pal : _playerListeners)   
+                pal.playerMoved();
+        }
     }
     
     // ------------------- PLAYER LISTENER -----------------------------
