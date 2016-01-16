@@ -18,6 +18,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import spiders.model.GameModel;
+import spiders.model.Level;
 
 /**
  * Main class
@@ -30,7 +32,7 @@ public class Spiders extends JFrame {
     private JLabel _bestResultInfo = new JLabel();
     private JLabel _stepInfo = new JLabel();
     private JPanel _content = new JPanel();
-    private GamePanel _panel = new GamePanel();
+    private GamePanel _panel = new GamePanel(new GameModel(Level.easy()));
     
     // ----------- MENU BAR ------------------------
     private JMenuBar _menu = null;
@@ -50,11 +52,11 @@ public class Spiders extends JFrame {
 
         _menu.add(fileMenu);
     }
-
+    
     /**
      * Menu listener
      */
-    private static class FileMenuListener implements ActionListener {
+    private class FileMenuListener implements ActionListener {
         
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -69,12 +71,41 @@ public class Spiders extends JFrame {
                 Object selectedValue = JOptionPane.showInputDialog(null,
                 "Choose one level", "Game Level",  JOptionPane.INFORMATION_MESSAGE, null,
                 possibleValues, possibleValues[0]);
+                
+                if (selectedValue.equals("Easy")) {
+                    _panel = new GamePanel(new GameModel(Level.easy()));
+                }
+                
+                if (selectedValue.equals("Medium")) {
+                    _panel = new GamePanel(new GameModel(Level.medium()));
+                }
+                    
+                
+                if (selectedValue.equals("Hard")) {
+                    _panel = new GamePanel(new GameModel(Level.hard()));
+                }
+                
+                repaintField();
             }
             
             if ("high score".equals(command)) {
                 // read and show high score
             }
         }
+    }
+    
+    private void repaintField() {
+        _content.removeAll();
+        _controlPanel.removeAll();
+        
+        // add item to control panel
+        _controlPanel.add(createInfoPanel());
+        _content.setLayout(new BorderLayout());
+        _content.add(_controlPanel, BorderLayout.NORTH);
+        _content.add(_panel, BorderLayout.CENTER);
+        
+        _content.revalidate();
+        pack();
     }
     
     // ------------- GAME INFO PANEL ----------------------
