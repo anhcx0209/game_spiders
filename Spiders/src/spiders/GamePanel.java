@@ -20,6 +20,7 @@ import spiders.figure.Spider;
 import spiders.figure.SpiderFood;
 import spiders.model.CobWebObject;
 import spiders.model.GameModel;
+import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
 /**
@@ -32,6 +33,7 @@ public class GamePanel extends JPanel implements KeyListener {
     
     /**
      * Constructor
+     * @param gm game model
      */
     public GamePanel(GameModel gm) {
         _model = gm;
@@ -131,27 +133,47 @@ public class GamePanel extends JPanel implements KeyListener {
 
     // ---------------- KEY EVENT-------------------------------------
     @Override
-    public void keyTyped(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void keyTyped(KeyEvent ke) {
+        
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void keyPressed(KeyEvent ke) {
+        if(ke.getKeyCode() == KeyEvent.VK_UP) {         // move up
+            System.err.println("Key up pressed!");
+            _model.player().move(Direction.north());
+            _model.increaseStep();
+        }
+        else if(ke.getKeyCode() == KeyEvent.VK_DOWN) {  // move down
+            System.err.println("Key down pressed!");
+            _model.player().move(Direction.south());
+            _model.increaseStep();
+        }
+        else if(ke.getKeyCode() == KeyEvent.VK_LEFT) {  // move left
+            System.err.println("Key left pressed!");
+            _model.player().move(Direction.west());
+            _model.increaseStep();
+        }
+        else if(ke.getKeyCode() == KeyEvent.VK_RIGHT) { // move right
+            System.err.println("Key right pressed!");
+            _model.player().move(Direction.east());
+            _model.increaseStep();
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    // ---------------------- GET LEFT TOP ----------------------
     private Point coordPoint(Position pos) {
         int left = GAP + CELL_SIZE * (pos.column()-1) - 25;
         int top = GAP + CELL_SIZE * (pos.row()-1) - 25;
         
         return new Point(left, top);
     }
-
+    
+    // ------------------- DRAW GRID ----------------------------
     private void drawGrid(Graphics g) {
         int width  = getWidth();
         int height = getHeight();
