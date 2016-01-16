@@ -9,6 +9,19 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,6 +40,9 @@ import spiders.model.Level;
  * @author anhcx
  */
 public class Spiders extends JFrame {
+    
+    // ------------ HIGH SCORE ---------------------
+    private Map<Integer, String> _scoreBoard = new TreeMap();
     
     // ------------ COMPONENTS ---------------------
     private JPanel _controlPanel = new JPanel(new FlowLayout());
@@ -91,7 +107,14 @@ public class Spiders extends JFrame {
             }
             
             if ("high score".equals(command)) {
-                // read and show high score
+                // build content
+                String content = "";
+                for (Map.Entry<Integer, String> entry : _scoreBoard.entrySet()) {
+                    content += "Score : " + entry.getKey() + " Name : " + entry.getValue();
+                    content += "\n";
+                }
+                
+                JOptionPane.showMessageDialog(null, content);
             }
         }
     }
@@ -144,6 +167,13 @@ public class Spiders extends JFrame {
      * Create a new game window
      */
     public Spiders() {
+        // read high score
+        try {
+            readHighScore();
+        } catch (IOException ex) {
+            Logger.getLogger(Spiders.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        
         // add control panel and game panel to content
         _controlPanel.add(createInfoPanel());
         _content.setLayout(new BorderLayout());
@@ -176,11 +206,41 @@ public class Spiders extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new Spiders();
+                Spiders frame = new Spiders();
+                frame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent we) {
+                        System.err.println("Writting..........");
+                        frame.writeWhenClose();
+                    }
+                });
             }
         });
     }
     
+    // ----------------------- READ HIGH SCORE ----------------------
+    private void readHighScore() throws FileNotFoundException, IOException {
+        HashMap ret = new HashMap();
+        BufferedReader br = new BufferedReader(new FileReader("D:\\Tmp\\hs.txt"));
+        
+        try {
+            String name = br.readLine();
+            String number = br.readLine();
+            
+            while (name != null) {
+                int n = Integer.parseInt(number);
+                ret.put(n, name);
+                
+                name = br.readLine();
+                number = br.readLine();
+            }
+        } finally {
+            br.close();
+        }
+        
+        _scoreBoard = new TreeMap();
+        _scoreBoard.putAll(ret);
+    }
     
     // ----------------------- GAME EVENT LISTENER ------------------
     public class RepaintByAction implements GameEventListener {
@@ -193,7 +253,7 @@ public class Spiders extends JFrame {
 
         @Override
         public void gameOver() {
-            String s = (String)JOptionPane.showInputDialog(
+            String playername = (String)JOptionPane.showInputDialog(
                     null,
                     "Your score: " + _panel.gameModel().step() + "\n" +
                     "Enter your name:\n",
@@ -202,7 +262,42 @@ public class Spiders extends JFrame {
                     null,
                     null,
                     "new player");
+            
+            _scoreBoard.put(_panel.gameModel().step(), playername);
         }
         
+    }
+    
+    private void writeWhenClose() {
+        // write to file
+        BufferedWriter bw = null;
+        File file = new File("D:\\Tmp\\hs.txt");
+        try {
+            // create file if it doesn't exist
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file);
+            bw = new BufferedWriter(fw);
+            
+            
+            // write all map to file
+            for (Map.Entry<Integer, String> entry : _scoreBoard.entrySet()) {
+                bw.write(entry.getValue());
+                bw.newLine();
+                bw.write(entry.getKey().toString());
+                bw.newLine();
+            }
+            
+        } catch (IOException ex) {
+                Logger.getLogger(Spiders.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } finally {
+            try {
+                bw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Spiders.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        }
     }
 }
