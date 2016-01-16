@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import spiders.figure.Computer;
+import spiders.figure.Player;
 import spiders.figure.Spider;
 import spiders.model.CobWebObject;
 import spiders.model.GameModel;
@@ -87,19 +89,26 @@ public class GamePanel extends JPanel implements KeyListener {
         drawGrid(g);
         
         // draw player
-        Point leftop = coordPoint(_model.player().position());
-        g.drawImage(player_image, leftop.x, leftop.y, 50, 30, this);
-        String str = " " + _model.player().life();
-        g.setColor(Color.red);
-        g.drawString(str, leftop.x + (5 * CELL_SIZE)/8, leftop.y + (2 * CELL_SIZE)/4 + FONT_HEIGHT);
+        ArrayList<CobWebObject> lists = _model.field().objects();
+        for (CobWebObject obj : lists) {
+            
+            if (obj instanceof Spider) {
+                drawSpider(g, (Spider)obj);
+            }
+            
+        }
     }
     
-    private void drawSpider(Graphics g, Spider s, Point lefTop) {
+    private void drawSpider(Graphics g, Spider s) {
+        Point lefTop = coordPoint(s.position());
         g.setColor(Color.RED);
         String str = " " + s.life();
         
-        if (s instanceof Spider)
+        if (s instanceof Player)
             g.drawImage(player_image, lefTop.x, lefTop.y, 50, 30, this);
+        
+        if (s instanceof Computer)
+            g.drawImage(spd_image, lefTop.x, lefTop.y, 50, 30, this);
         
         g.drawString(str, lefTop.x + (5 * CELL_SIZE)/8, lefTop.y + (2 * CELL_SIZE)/4 + FONT_HEIGHT);
         
