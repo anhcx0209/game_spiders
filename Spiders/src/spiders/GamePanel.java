@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Spider;
+import spiders.figure.SpiderFood;
 import spiders.model.CobWebObject;
 import spiders.model.GameModel;
 import spiders.navigations.Position;
@@ -92,11 +93,24 @@ public class GamePanel extends JPanel implements KeyListener {
         ArrayList<CobWebObject> lists = _model.field().objects();
         for (CobWebObject obj : lists) {
             
-            if (obj instanceof Spider) {
+            if (obj instanceof Spider) 
                 drawSpider(g, (Spider)obj);
-            }
             
+            if (obj instanceof SpiderFood)
+                drawFood(g, (SpiderFood)obj);
         }
+    }
+    
+    private void drawFood(Graphics g, SpiderFood f) {
+        Point lefTop = coordPoint(f.position());
+        g.setColor(Color.RED);
+        String str = " " + f.size();
+        
+        g.drawImage(fly_image, lefTop.x, lefTop.y, 50, 30, this);
+        
+        g.drawString(str, lefTop.x + (5 * CELL_SIZE)/8, lefTop.y + (2 * CELL_SIZE)/4 + FONT_HEIGHT);
+        
+        g.setColor(Color.BLACK);   // восстанваливаем цвет пера
     }
     
     private void drawSpider(Graphics g, Spider s) {
