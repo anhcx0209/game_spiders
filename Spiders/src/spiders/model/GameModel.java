@@ -5,6 +5,8 @@
  */
 package spiders.model;
 
+import java.util.ArrayList;
+import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Spider;
 
@@ -37,6 +39,21 @@ public class GameModel {
         // create new player
         _player = new Player(_field);
         _field.addObject(_player);
+        
+        // create computer 
+        for (int i = 0; i < _level._numberOfComputer; i++) {
+            Computer com = new Computer(_field);
+            _coms.add(com);
+            _field.addObject(com);
+        }
+            
+    }
+    
+    // ------------------ COMPUTER -------------------------
+    private ArrayList<Computer> _coms = new ArrayList<>();
+    
+    public ArrayList<Computer> computers() {
+        return _coms;
     }
     
     // ------------------ PLAYER -------------------------
