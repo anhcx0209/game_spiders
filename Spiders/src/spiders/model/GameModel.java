@@ -75,7 +75,11 @@ public class GameModel {
     private FoodFactory _foodFact = new FoodFactory(this);
     
     // ------------------- STEP --------------------------
-    int _step;
+    private int _step;
+    
+    public int step() {
+        return _step;
+    }
     
     /**
      * Increase game step by 1.
