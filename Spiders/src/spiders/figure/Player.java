@@ -5,6 +5,9 @@
  */
 package spiders.figure;
 
+import java.util.ArrayList;
+import spiders.events.GameEventListener;
+import spiders.events.PlayerActionListener;
 import spiders.model.CobWeb;
 import spiders.navigations.Direction;
 
@@ -19,4 +22,23 @@ public class Player extends Spider {
         _type = TypeObject.PLAYER;
     }
     
+    
+    public void playerMove(Direction dir) {
+        move(dir);
+        
+        // fire event to game model
+        for (PlayerActionListener pal : _playerListeners) 
+            pal.playerMoved();
+    }
+    
+    // ------------------- PLAYER LISTENER -----------------------------
+    private ArrayList<PlayerActionListener> _playerListeners = new ArrayList<>();
+    
+    public void addPAL(PlayerActionListener l) {
+        _playerListeners.add(l);
+    }
+    
+    public void removePAL(PlayerActionListener l) {
+        _playerListeners.remove(l);
+    }
 }
