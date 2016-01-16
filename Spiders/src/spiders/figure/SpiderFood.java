@@ -19,12 +19,13 @@ public class SpiderFood extends CobWebObject {
      */
     public SpiderFood(CobWeb cw) {
         super(cw);
+        _type = TypeObject.FOOD;
     }
     
     
     // ------------------ size ----------------------
     // size of food, it is value life will be increase when spider eat
-    int _size;          
+    private int _size = 6;          
     
     public int size() {
         return _size;

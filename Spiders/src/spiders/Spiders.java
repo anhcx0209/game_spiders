@@ -108,6 +108,7 @@ public class Spiders extends JFrame {
         
         // add listener to each spider
         _panel.gameModel().player().addGEL(new RepaintByAction());
+        _panel.gameModel().addGEL(new RepaintByAction());
         
         _content.revalidate();
         pack();
@@ -152,7 +153,7 @@ public class Spiders extends JFrame {
         
         // add listener to each player
         _panel.gameModel().player().addGEL(new RepaintByAction());
-        
+        _panel.gameModel().addGEL(new RepaintByAction());
         // add menu bar
         createMenu();
         setJMenuBar(_menu);

@@ -2,7 +2,6 @@ package spiders.figure;
 
 import java.util.ArrayList;
 import spiders.events.GameEventListener;
-import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
 import spiders.navigations.Direction;

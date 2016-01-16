@@ -1,6 +1,8 @@
 package spiders.model;
 
 import java.util.ArrayList;
+import spiders.events.GameEventListener;
+import spiders.events.PlayerActionListener;
 import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Spider;
@@ -10,7 +12,7 @@ import spiders.navigations.Position;
  * Game model, determine when player have to end game, control the computers...
  * @author anhcx
  */
-public class GameModel {
+public class GameModel implements PlayerActionListener {
     
     private CobWeb _field;  // cobweb - where player play on
     private Level _level;
@@ -44,6 +46,7 @@ public class GameModel {
         
         // create new player
         _player = new Player(_field);
+        _player.addPAL(this);
         _field.addObject(_player);
         
         // create computer 
@@ -86,5 +89,24 @@ public class GameModel {
      */
     public void increaseStep() {
         _step++;
+    }
+
+    @Override
+    public void playerMoved() {
+        if (player().life() == 0) {
+            for (GameEventListener gel : _gameListeners)
+                gel.gameOver();
+        }
+    }
+    
+    // ------------------- GAME LISTENER -----------------------------
+    private ArrayList<GameEventListener> _gameListeners = new ArrayList<>();
+    
+    public void addGEL(GameEventListener l) {
+        _gameListeners.add(l);
+    }
+    
+    public void removeGEL(GameEventListener l) {
+        _gameListeners.remove(l);
     }
 }
