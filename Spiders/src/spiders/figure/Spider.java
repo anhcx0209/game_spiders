@@ -58,7 +58,9 @@ public class Spider extends CobWebObject  {
                 Position newPos = position().next(direct);
                 
                 if (cobweb().have(TypeObject.FOOD, newPos)) {
-                    // eating here
+                    SpiderFood food = cobweb().getFood(newPos);
+                    increaseLife(food.size());
+                    cobweb().removeObject(food);
                 }
                 
                 setPosition(newPos);
