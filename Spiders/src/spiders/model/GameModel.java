@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Spider;
+import spiders.navigations.Position;
 
 /**
  * Game model, determine when player have to end game, control the computers...
@@ -35,7 +36,10 @@ public class GameModel {
      * @param l pre-define level for game model
      */
     public GameModel(Level l) {
+        _step = 0;
         _field = new CobWeb(l.baseSize());
+        Position.setHorizontalRange(1, l.baseSize());
+        Position.setVerticalRange(1, l.baseSize());
         _level = l;
         
         // create new player
@@ -70,4 +74,13 @@ public class GameModel {
     // ------------------- FOOD FACTORY ------------------
     private FoodFactory _foodFact = new FoodFactory(this);
     
+    // ------------------- STEP --------------------------
+    int _step;
+    
+    /**
+     * Increase game step by 1.
+     */
+    public void increaseStep() {
+        _step++;
+    }
 }
