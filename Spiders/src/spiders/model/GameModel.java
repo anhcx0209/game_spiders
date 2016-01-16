@@ -5,6 +5,8 @@
  */
 package spiders.model;
 
+import spiders.figure.Spider;
+
 /**
  * Game model, determine when player have to end game, control the computers...
  * @author anhcx
@@ -12,6 +14,7 @@ package spiders.model;
 public class GameModel {
     
     private CobWeb _field;  // cobweb - where player play on
+    private Level _level;
     
     /**
      * getter for _field
@@ -24,16 +27,19 @@ public class GameModel {
     /**
      * create a game model with pre-defined level
      * level = hard, medium and easy
+     * @param l pre-define level for game model
      */
     public GameModel(Level l) {
-        _field = new CobWeb();
-        _field.setSize(l._baseSize);
+        _field = new CobWeb(l._baseSize);
+        _level = l;
+        
+        // create new player
+        _player = new Spider(_field);
+        
     }
     
-    // ------------------ LEVEL -------------------------
-    private Level _level = new Level();
-    
-    
-    
     // ------------------ PLAYER -------------------------
+    private Spider _player;
+    
+    
 }

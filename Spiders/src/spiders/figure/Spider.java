@@ -45,8 +45,4 @@ public class Spider extends CobWebObject  {
     
     public void move(Direction direct) {
     }
-    
-    private boolean moveIsPossible(Direction direct) {
-        return false;
-    }
 }
