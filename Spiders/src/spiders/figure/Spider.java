@@ -2,6 +2,7 @@ package spiders.figure;
 
 import java.util.ArrayList;
 import spiders.events.GameEventListener;
+import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
 import spiders.navigations.Direction;
@@ -22,9 +23,10 @@ public class Spider extends CobWebObject  {
         super(cw);
         _position = cw.getFreePosition();
         _life = 10;
+        _stuned = false;
     }
     
-    // ------------------- life ----------------
+    // ------------------- life ------------------------
     private int _life;      // store life, when life = 0, spider die
     
     public int life() {
@@ -47,6 +49,21 @@ public class Spider extends CobWebObject  {
         _life += amount;
     }
     
+    // --------------- Stuned time ------------------------
+    private boolean _stuned;
+    
+    public boolean isStuned() {
+        return _stuned;
+    }
+    
+    public void unStun() {
+        _stuned = false;
+    }
+    
+    public void stun() {
+        _stuned = true;
+    }
+    
     /**
      * Spider move.
      * @param direct direction to moving.
@@ -57,13 +74,17 @@ public class Spider extends CobWebObject  {
             if (moveIsPossible(direct)) {
                 Position newPos = position().next(direct);
                 
+                // eating
                 if (cobweb().have(TypeObject.FOOD, newPos)) {
                     SpiderFood food = cobweb().getFood(newPos);
                     increaseLife(food.size());
                     cobweb().removeObject(food);
                 }
                 
-                setPosition(newPos);
+                // only realy move when stuntime = 0
+                if (!isStuned())
+                    setPosition(newPos);
+                
                 decreaseLife(1);
                 
                 // Лог
@@ -72,6 +93,11 @@ public class Spider extends CobWebObject  {
                 for (GameEventListener gel : _gameListeners) {
                     gel.positionChanged();
                 }
+                
+                for (SpiderActionListener sal : _actionListeners) {
+                    sal.spiderMoving(this);
+                }
+                
                 return true;
             }
         }
@@ -100,4 +126,12 @@ public class Spider extends CobWebObject  {
     public void removeGEL(GameEventListener l) {
         _gameListeners.remove(l);
     }
+    
+    // ------------------- Spider LISTENER -----------------------------
+    private ArrayList<SpiderActionListener> _actionListeners = new ArrayList<>();
+    
+    public void addSAL(SpiderActionListener l) {
+        _actionListeners.add(l);
+    }
+    
 }
