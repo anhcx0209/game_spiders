@@ -5,6 +5,7 @@ import spiders.events.GameEventListener;
 import spiders.events.PlayerActionListener;
 import spiders.figure.Computer;
 import spiders.figure.Player;
+import spiders.figure.Stone;
 import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
@@ -60,6 +61,12 @@ public class GameModel implements PlayerActionListener {
             
         // create food
         _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+        
+        // create stone
+        for (int i = 0; i < _level.numberStone(); i++) {
+            Stone s = new Stone(_field);
+            _field.addObject(s);
+        }
     }
     
     // ------------------ COMPUTER -------------------------
