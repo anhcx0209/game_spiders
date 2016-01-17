@@ -160,8 +160,8 @@ public class GameModel implements PlayerActionListener {
     private ArrayList<Rain> _rains = new ArrayList<>();
     
     private void makeRainMove() {
-        for (Rain rains : _rains)
-            rains.moveDown();
+        for (Rain rain : _rains)
+            rain.moveDown();
     }
     
     
