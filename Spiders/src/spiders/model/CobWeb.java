@@ -2,6 +2,7 @@ package spiders.model;
 
 import java.util.ArrayList;
 import java.util.Random;
+import spiders.figure.Rain;
 import spiders.figure.SpiderFood;
 import spiders.figure.Stone;
 import spiders.model.CobWebObject.TypeObject;
@@ -200,6 +201,9 @@ public class CobWeb {
         return null;
     }
     
+    /**
+     * Make bug can escape from cobweb.
+     */
     public void letBugGoOut() {
         ArrayList<CobWebObject> bugs = objects(TypeObject.FOOD);
         for (CobWebObject obj : bugs) {
