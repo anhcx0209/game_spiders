@@ -8,6 +8,7 @@ package spiders.figure;
 import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.navigations.Direction;
+import spiders.navigations.Position;
 
 /**
  * Rain is risk, can move down and can stun food and spider.
@@ -15,25 +16,23 @@ import spiders.navigations.Direction;
  * When go to last row, it will disappear.
  * @author anhcx
  */
-public class Rain extends Risk implements SpiderActionListener {
+public class Rain extends Risk {
 
     public Rain(CobWeb cw) {
         super(cw);
         _type = TypeObject.RAIN;
         _stunTime = 3;
+        _spider = null;
     }
 
     /**
      * Rain move down.
-     * @param dir
      */
-    public void move(Direction dir) {
-        
-    }
-    
-    @Override
-    public void spiderMoving(Spider s) {
-        
+    public void moveDown() {
+        Direction dir = Direction.south();
+        Position newPos = position().next(dir);
+        if (newPos.isValid())
+            setPosition(newPos);
     }
     
 }

@@ -264,7 +264,7 @@ public class Spiders extends JFrame {
             if (playername != null)
                 _scoreBoard.put(_panel.gameModel().step(), playername);
         }
-        
+
     }
     
     private void writeWhenClose() {
