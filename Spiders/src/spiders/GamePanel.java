@@ -18,6 +18,7 @@ import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Spider;
 import spiders.figure.SpiderFood;
+import spiders.figure.Stone;
 import spiders.model.CobWebObject;
 import spiders.model.GameModel;
 import spiders.navigations.Direction;
@@ -104,7 +105,19 @@ public class GamePanel extends JPanel implements KeyListener {
             
             if (obj instanceof SpiderFood)
                 drawFood(g, (SpiderFood)obj);
+            
+            if (obj instanceof Stone)
+                drawStone(g, (Stone)obj);
         }
+    }
+    
+    private void drawStone(Graphics g, Stone s) {
+        Point lefTop = coordPoint(s.position());
+        g.setColor(Color.RED);
+        
+        g.drawImage(rock_image, lefTop.x, lefTop.y, 50, 30, this);
+        
+        g.setColor(Color.BLACK);   // восстанваливаем цвет пера
     }
     
     private void drawFood(Graphics g, SpiderFood f) {
