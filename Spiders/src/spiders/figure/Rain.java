@@ -23,16 +23,57 @@ public class Rain extends Risk {
         _type = TypeObject.RAIN;
         _stunTime = 3;
         _spider = null;
+        _food = null;
+        _timeStunFood = 2;
     }
 
+    protected SpiderFood _food;
+    private int _timeStunFood;
+    
+    protected boolean busyWithFood() {
+        return (_food != null);
+    }
+     
+    
     /**
      * Rain move down.
      */
     public void moveDown() {
-        Direction dir = Direction.south();
-        Position newPos = position().next(dir);
-        if (newPos.isValid())
-            setPosition(newPos);
+        
+        if (!busy() && !busyWithFood()) {
+            Direction dir = Direction.south();
+            Position newPos = position().next(dir);
+            if (newPos.isValid())
+                setPosition(newPos);
+            
+            // if rain move to pos of player or computer - spider on web.
+            if (cobweb().have(TypeObject.PLAYER, newPos) || cobweb().have(TypeObject.COMPUTER, newPos)) {
+                // stun it;
+                _spider = cobweb().getSpider(newPos);
+                _spider.stun();
+                System.err.println(_spider.name() + " is stuned at " + position().toString());
+            }
+            
+            // if rain move to pos of food.
+            if (cobweb().have(TypeObject.FOOD, newPos)) {
+                // stun it;
+                _food = cobweb().getFood(newPos);
+                _food.stun();
+                System.err.println(_food.name() + " is stuned at " + position().toString());
+            }
+        } else {
+            if (busyWithFood()) {
+                _timeStunFood--;
+                System.err.println(_food.name() + "try to move but not....");
+                System.err.println("remain time: " + _timeStunFood);
+
+                if (_timeStunFood == 0) {
+                    _food.unStun();
+                    _food = null;
+                    _timeStunFood = 2;
+                }
+            }
+        }
     }
     
 }
