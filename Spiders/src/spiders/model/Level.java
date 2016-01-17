@@ -24,7 +24,15 @@ public class Level {
     private int _baseSize;
     private int _numberOfComputer;
     private int _numberBug;
+    private int _numberStone;
     private int[] _factorGenFood; 
+    
+    /**
+     * @return number of stone.
+     */
+    public int numberStone() {
+        return _numberStone;
+    }
     
     /**
      * @return number of bug must be generate per time.
@@ -79,12 +87,11 @@ public class Level {
      */
     public static Level easy() {
         Level l = new Level();
-        l._baseSize = 10;
+        l._baseSize = 9;
         l._numberOfComputer = 2;
         l._numberBug = 6;
         l.makeFactor(N_FF_EASY);
-        
-        int x = 100;
+        l._numberStone = 3;
         return l;
     }
     
