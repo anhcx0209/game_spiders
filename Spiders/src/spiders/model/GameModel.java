@@ -131,6 +131,17 @@ public class GameModel implements PlayerActionListener {
     // ------------------- FOOD FACTORY ------------------
     private FoodFactory _foodFact = new FoodFactory(this);
     
+    private void spendMoreFood() {
+        // generate more food
+        if (_level.spin() && field().foodPerSpider() < 1.0) {
+            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+            
+            // fire trigger to game panel
+            for (GameEventListener gel : _gameListeners)
+                gel.positionChanged();
+        }
+    }
+    
     // ------------------- STEP --------------------------
     private int _step;
     
@@ -149,18 +160,17 @@ public class GameModel implements PlayerActionListener {
     public void playerMoved() {
         playAsComputer();
         
-        // generate more food
-        if (_level.spin() && field().foodPerSpider() < 1.0) {
-            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
-            
-            // fire trigger to game panel
-            for (GameEventListener gel : _gameListeners)
-                gel.positionChanged();
-        }
+        spendMoreFood();
         
         // check computer die and remove it
         checkComDie();
         checkGameOver();
+        
+        // bugs are escaping
+        field().letBugGoOut();
+        
+        for (GameEventListener gel : _gameListeners)
+            gel.positionChanged();
     }
     
     // ------------------- GAME LISTENER -----------------------------

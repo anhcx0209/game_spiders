@@ -20,6 +20,7 @@ public class SpiderFood extends CobWebObject {
     public SpiderFood(CobWeb cw) {
         super(cw);
         _type = TypeObject.FOOD;
+        makeFactor();
     }
     
     
@@ -50,11 +51,39 @@ public class SpiderFood extends CobWebObject {
             return false;
     }
     
+    // --------------------- FACTOR TO ESCAPE -------------------
+
+    int[] _factorEscape;
+    
+    private void makeFactor() {
+        _factorEscape = new int[_size]; // 10 % gen food
+        
+        boolean[] flag = new boolean[100];
+        Random rn = new Random();
+        for (int i = 0; i < _size; i++) {
+            boolean ok = true;
+            while (ok) {
+                int k = rn.nextInt(100);
+                if (!flag[k]) {
+                    flag[k] = true;
+                    _factorEscape[i] = k;
+                    ok = false;
+                }
+            }
+        }
+    }
+    
     /**
      *
      * @return
      */
     public boolean escape() {
-        return true;
+        Random rand = new Random();
+        int x = rand.nextInt(100);
+        for (int i = 0; i < _factorEscape.length; i++)
+            if (_factorEscape[i] == x)
+                return true;
+        
+        return false;
     }
 }

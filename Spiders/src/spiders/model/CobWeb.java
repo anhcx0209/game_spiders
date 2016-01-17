@@ -183,4 +183,15 @@ public class CobWeb {
         
         return null;
     }
+    
+    public void letBugGoOut() {
+        ArrayList<CobWebObject> bugs = objects(TypeObject.FOOD);
+        for (CobWebObject obj : bugs) {
+            SpiderFood sf = (SpiderFood)obj;
+            if (sf.escape()) {
+                System.err.println("Bug in " + sf.position().toString() + " is gone.");
+                removeObject(sf);
+            }
+        }
+    }
 }
