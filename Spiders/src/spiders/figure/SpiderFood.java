@@ -20,13 +20,16 @@ public class SpiderFood extends CobWebObject {
     public SpiderFood(CobWeb cw) {
         super(cw);
         _type = TypeObject.FOOD;
+        Random rn = new Random();
+        _size = rn.nextInt(11) + 1;
+        
         makeFactor();
     }
     
     
     // ------------------ size ----------------------
     // size of food, it is value life will be increase when spider eat
-    private int _size = 6;          
+    private int _size;          
     
     public int size() {
         return _size;
@@ -60,6 +63,7 @@ public class SpiderFood extends CobWebObject {
         
         boolean[] flag = new boolean[100];
         Random rn = new Random();
+        
         for (int i = 0; i < _size; i++) {
             boolean ok = true;
             while (ok) {
