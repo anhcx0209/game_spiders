@@ -66,6 +66,11 @@ public class GameModel implements PlayerActionListener {
         for (int i = 0; i < _level.numberStone(); i++) {
             Stone s = new Stone(_field);
             _field.addObject(s);
+            
+            // add listener
+            _player.addSAL(s);
+            for (Computer com : _coms)
+                com.addSAL(s);
         }
     }
     
@@ -178,6 +183,8 @@ public class GameModel implements PlayerActionListener {
         
         for (GameEventListener gel : _gameListeners)
             gel.positionChanged();
+        
+        increaseStep();
     }
     
     // ------------------- GAME LISTENER -----------------------------
