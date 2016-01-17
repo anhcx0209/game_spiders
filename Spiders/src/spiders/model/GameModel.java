@@ -125,9 +125,18 @@ public class GameModel implements PlayerActionListener {
     public void playerMoved() {
         // make computer move
         for (Computer com : _coms) {
-            Direction dir = com.think();
-            System.err.println(com.name() + " move " + dir.toString());
-            com.move(dir);
+            boolean moved = false;
+            ArrayList<Direction> dir = com.think();
+            for (Direction d : dir) {
+                if (com.move(d)) {
+                    System.err.println(com.name() + " move " + dir.toString());
+                    moved = true;
+                    break;
+                }
+            }
+            
+            if (!moved)
+                System.err.println(com.name() + " can not move anyway");
         }
         
         // generate more food

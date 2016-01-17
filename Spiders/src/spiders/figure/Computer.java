@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package spiders.figure;
 
 import java.util.ArrayList;
@@ -12,7 +7,7 @@ import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
 /**
- *
+ * Computer can think and move to food, which is nearest from him.
  * @author anhcx
  */
 public class Computer extends Spider {
@@ -22,8 +17,13 @@ public class Computer extends Spider {
         _type = TypeObject.COMPUTER;
     }
     
-    // AI when be here
-    public Direction think() {
+    /**
+     * Find the nearest food from him.
+     * @return direction to nearest food.
+     */
+    public ArrayList<Direction> think() {
+        
+        ArrayList<Direction> ret = new ArrayList<>();
         Position myPos = position();
         Position bestPos = null;
         int min = 999999;
@@ -37,14 +37,50 @@ public class Computer extends Spider {
                 bestPos = e.position();
         }
         
-        // get direction to best pos
+        // in case best pos is found, return a list of moveable to target
         if (bestPos != null) {
             System.err.println(name() + " dertemined target: " + bestPos.toString());
-            return Position.wayTo(myPos, bestPos);
+            return wayTo(myPos, bestPos);
         } else {
             System.err.println(name() + " moved random!");
-            return Direction.randomDirection();
+            return randomDirection();
         }
+    }
+    
+    private ArrayList<Direction> randomDirection() {
+        ArrayList<Direction> ret = new ArrayList<>();
+        
+        Direction west = Direction.west();
+        ret.add(west);
+        Direction east = Direction.east();
+        ret.add(east);
+        Direction north = Direction.north();
+        ret.add(north);
+        Direction south = Direction.south();
+        ret.add(south);
+        
+        return ret;
+    }
+    
+    private ArrayList<Direction> wayTo(Position a, Position b) {
+        ArrayList<Direction> ret = new ArrayList<>();
+        
+        int delta_row = a.row() - b.row();
+        int delta_col = a.column() - b.column();
+        
+        if (delta_col > 0)
+            ret.add(Direction.west());
+
+        if (delta_col < 0)
+            ret.add(Direction.east());
+
+        if (delta_row > 0)
+            ret.add(Direction.north());
+
+        if (delta_row < 0)
+            ret.add(Direction.south());
+        
+        return ret;
     }
     
 }

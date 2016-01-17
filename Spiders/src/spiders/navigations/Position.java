@@ -36,27 +36,6 @@ public class Position {
         return delta_x * delta_x + delta_y * delta_y;
     }
     
-    public static Direction wayTo(Position a, Position b) {
-        int delta_row = a.row() - b.row();
-        int delta_col = a.column() - b.column();
-        
-        if (delta_row == 0) {
-            if (delta_col > 0)
-                return Direction.west();
-            
-            if (delta_col < 0)
-                return Direction.east();
-        }
-        
-        if (delta_row > 0)
-            return Direction.north();
-        
-        if (delta_row < 0)
-            return Direction.south();
-        
-        return null;
-    }
-    
     public static CellRange verticalRange() {
         return _verticalRange;
     }

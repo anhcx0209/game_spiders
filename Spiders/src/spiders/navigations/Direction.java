@@ -34,7 +34,7 @@ public class Direction {
     public static Direction west()
     { return new Direction(180); }
     
-    // ------------------ RANDOM DIRECTION 
+    // ------------------ RANDOM DIRECTION -------------------
     public static Direction randomDirection() {
         Random rn = new Random();
         int n = rn.nextInt(4);
