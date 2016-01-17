@@ -159,22 +159,18 @@ public class GamePanel extends JPanel implements KeyListener {
         if(ke.getKeyCode() == KeyEvent.VK_UP) {         // move up
             System.err.println("Key up pressed!");
             _model.player().playerMove(Direction.north());
-            _model.increaseStep();
         }
         else if(ke.getKeyCode() == KeyEvent.VK_DOWN) {  // move down
             System.err.println("Key down pressed!");
             _model.player().playerMove(Direction.south());
-            _model.increaseStep();
         }
         else if(ke.getKeyCode() == KeyEvent.VK_LEFT) {  // move left
             System.err.println("Key left pressed!");
             _model.player().playerMove(Direction.west());
-            _model.increaseStep();
         }
         else if(ke.getKeyCode() == KeyEvent.VK_RIGHT) { // move right
             System.err.println("Key right pressed!");
             _model.player().playerMove(Direction.east());
-            _model.increaseStep();
         }
     }
 
