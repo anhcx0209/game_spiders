@@ -46,12 +46,14 @@ public class GameModel implements PlayerActionListener {
         
         // create new player
         _player = new Player(_field);
+        _player.setName("player");
         _player.addPAL(this);
         _field.addObject(_player);
         
         // create computer 
         for (int i = 0; i < _level.numberCom(); i++) {
             Computer com = new Computer(_field);
+            com.setName("Com" + i);
             _coms.add(com);
             _field.addObject(com);
         }
@@ -123,20 +125,13 @@ public class GameModel implements PlayerActionListener {
     public void playerMoved() {
         // make computer move
         for (Computer com : _coms) {
-            boolean ok = false;
-            while (!ok) {
-                Direction dir = com.think();
-                if (com.move(dir))
-                    ok = true;
-                else 
-                    dir = Direction.randomDirection();
-                System.err.println(dir);
-            }
+            Direction dir = com.think();
+            System.err.println(com.name() + " move " + dir.toString());
+            com.move(dir);
         }
         
-        
         // generate more food
-        if (_level.spin() && field().foodPerSpider() < 1.2) {
+        if (_level.spin() && field().foodPerSpider() < 1.0) {
             _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
             
             // fire trigger to game panel

@@ -28,7 +28,9 @@ public class FoodFactory {
     public ArrayList<SpiderFood> createFood(int number) {
         ArrayList<SpiderFood> ret = new ArrayList<>();
         for (int i = 0; i < number; i++) {
-            ret.add(new SpiderFood(_gameModel.field()));
+            SpiderFood sf = new SpiderFood(_gameModel.field());
+            sf.setName("Bug" + i);
+            ret.add(sf);
         }
         return ret;
     }

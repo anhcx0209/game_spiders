@@ -36,11 +36,15 @@ public class CobWeb {
      * @param outFood - food outside the web.
      */
     public void captureMoreFood(ArrayList<SpiderFood> outFood) {
+        int count = 0;
         for (SpiderFood sf : outFood) {
             if (sf.failIntoWeb()) {
+                count++;
                 addObject(sf);
             }
         }
+        
+        System.err.println("Capture : " + count);
     }
     
     // ------------------- get free position --------
@@ -115,9 +119,11 @@ public class CobWeb {
             if (e.type() == TypeObject.COMPUTER) {
                 nSpider = nSpider + 1;
             }
-            nSpider = nSpider + 1;    
         }
-        
+        // add 1 spider is player
+        nSpider = nSpider + 1;   
+        // print log
+        System.err.println("Food: " + nFood + " Spider: " + nSpider);
         return nFood / nSpider;
     }
     

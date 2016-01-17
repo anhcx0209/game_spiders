@@ -67,8 +67,7 @@ public class Spider extends CobWebObject  {
                 decreaseLife(1);
                 
                 // Лог
-                System.err.println("Spider moved to:" + position().row() + "," +
-                position().column());
+                System.err.println(name() + " moved to: " + position().toString());
                 
                 for (GameEventListener gel : _gameListeners) {
                     gel.positionChanged();

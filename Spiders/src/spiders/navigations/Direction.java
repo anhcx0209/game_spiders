@@ -103,4 +103,22 @@ public class Direction {
     public boolean isOpposite(Direction other) {
         return this.opposite().equals(other);
     }
+    
+    // ----------------- TO STRING -------------------------
+    @Override
+    public String toString() {
+        switch (_angle) {
+            case 90:
+                return "UP";
+            case 270:
+                return "DOWN";
+            case 0:
+                return "RIGHT";
+            case 180:
+                return "LEFT";
+            default:
+                return "UNKNOWN";
+        }
+    }
+    
 }

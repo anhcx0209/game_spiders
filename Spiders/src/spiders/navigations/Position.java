@@ -138,4 +138,10 @@ public class Position {
         
         return false;
     }
+    
+    // --------------------- TO STRING --------------------------
+    @Override 
+    public String toString() {
+        return "(" + _row + ", " + _column + ")";
+    }
 }
