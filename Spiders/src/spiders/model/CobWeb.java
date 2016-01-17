@@ -3,6 +3,7 @@ package spiders.model;
 import java.util.ArrayList;
 import java.util.Random;
 import spiders.figure.Rain;
+import spiders.figure.Spider;
 import spiders.figure.SpiderFood;
 import spiders.figure.Stone;
 import spiders.model.CobWebObject.TypeObject;
@@ -195,6 +196,23 @@ public class CobWeb {
         for (CobWebObject obj : _objects) {
             if (obj.position().equals(pos) && obj.type() == TypeObject.STONE) {
                 return (Stone)obj;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get spider from a position.
+     * @param pos position
+     * @return spider in position
+     */
+    public Spider getSpider(Position pos) {
+        for (CobWebObject obj : _objects) {
+            if (obj.position().equals(pos) 
+                    && (obj.type() == TypeObject.PLAYER || obj.type() == TypeObject.COMPUTER )
+                        ) {
+                return (Spider)obj;
             }
         }
         
