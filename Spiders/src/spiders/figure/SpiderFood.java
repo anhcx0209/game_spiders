@@ -22,10 +22,24 @@ public class SpiderFood extends CobWebObject {
         _type = TypeObject.FOOD;
         Random rn = new Random();
         _size = rn.nextInt(11) + 1;
-        
+        _stuned = false;
         makeFactor();
     }
     
+    // ------------------ stun ----------------------
+    private boolean _stuned;
+    
+    public boolean isStuned() {
+        return _stuned;
+    }
+    
+    public void unStun() {
+        _stuned = false;
+    }
+    
+    public void stun() {
+        _stuned = true;
+    }
     
     // ------------------ size ----------------------
     // size of food, it is value life will be increase when spider eat
