@@ -73,16 +73,21 @@ public class Spider extends CobWebObject  {
         if (this.life() > 0) {
             if (moveIsPossible(direct)) {
                 Position newPos = position().next(direct);
+                boolean eatStunFood = false;
                 
                 // eating
                 if (cobweb().have(TypeObject.FOOD, newPos)) {
                     SpiderFood food = cobweb().getFood(newPos);
-                    increaseLife(food.size());
-                    cobweb().removeObject(food);
+                    if (!food.isStuned()) {
+                        increaseLife(food.size());
+                        cobweb().removeObject(food);
+                    } else {
+                        eatStunFood = true;
+                    }
                 }
                 
-                // only realy move when stuntime = 0
-                if (!isStuned())
+                // only realy move when isn't stuned or 
+                if (!isStuned() && !eatStunFood)
                     setPosition(newPos);
                 
                 decreaseLife(1);
