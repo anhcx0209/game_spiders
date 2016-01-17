@@ -74,8 +74,8 @@ public class SpiderFood extends CobWebObject {
     }
     
     /**
-     *
-     * @return
+     * Bug try to escape.
+     * @return successful or not.
      */
     public boolean escape() {
         Random rand = new Random();
