@@ -5,6 +5,7 @@ import spiders.events.GameEventListener;
 import spiders.events.PlayerActionListener;
 import spiders.figure.Computer;
 import spiders.figure.Player;
+import spiders.figure.Rain;
 import spiders.figure.Stone;
 import spiders.navigations.Direction;
 import spiders.navigations.Position;
@@ -72,6 +73,11 @@ public class GameModel implements PlayerActionListener {
             for (Computer com : _coms)
                 com.addSAL(s);
         }
+        
+        // create rain
+        ArrayList<Rain> rains = _rainFact.createRains();
+        for (Rain rain : rains)
+            field().addObject(rain);
     }
     
     // ------------------ COMPUTER -------------------------
@@ -139,6 +145,9 @@ public class GameModel implements PlayerActionListener {
                 gel.gameOver();
         }
     }
+    
+    // ------------------- RAIN FACTORY ------------------
+    private RainFactory _rainFact = new RainFactory(this);
     
     // ------------------- FOOD FACTORY ------------------
     private FoodFactory _foodFact = new FoodFactory(this);
