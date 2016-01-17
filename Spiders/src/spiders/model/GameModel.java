@@ -76,8 +76,15 @@ public class GameModel implements PlayerActionListener {
         
         // create rain
         ArrayList<Rain> rains = _rainFact.createRains();
-        for (Rain rain : rains)
+        for (Rain rain : rains) {
+            _rains.add(rain);
             field().addObject(rain);
+            
+            // add listener
+            _player.addSAL(rain);
+            for (Computer com : _coms)
+                com.addSAL(rain);
+        }
     }
     
     // ------------------ COMPUTER -------------------------
@@ -149,6 +156,15 @@ public class GameModel implements PlayerActionListener {
     // ------------------- RAIN FACTORY ------------------
     private RainFactory _rainFact = new RainFactory(this);
     
+    // ------------------- Rain --------------------------
+    private ArrayList<Rain> _rains = new ArrayList<>();
+    
+    private void makeRainMove() {
+        for (Rain rains : _rains)
+            rains.moveDown();
+    }
+    
+    
     // ------------------- FOOD FACTORY ------------------
     private FoodFactory _foodFact = new FoodFactory(this);
     
@@ -189,6 +205,8 @@ public class GameModel implements PlayerActionListener {
         
         // bugs are escaping
         field().letBugGoOut();
+        // let rain move down
+        makeRainMove();
         
         for (GameEventListener gel : _gameListeners)
             gel.positionChanged();
@@ -201,9 +219,5 @@ public class GameModel implements PlayerActionListener {
     
     public void addGEL(GameEventListener l) {
         _gameListeners.add(l);
-    }
-    
-    public void removeGEL(GameEventListener l) {
-        _gameListeners.remove(l);
     }
 }
