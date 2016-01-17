@@ -69,6 +69,9 @@ public class GameModel implements PlayerActionListener {
         return _coms;
     }
     
+    /**
+    * Check computer if it die.
+    */
     private void checkComDie() {
         boolean[] trash = new boolean[_coms.size()];
         
@@ -87,6 +90,27 @@ public class GameModel implements PlayerActionListener {
         for (int i = trash.length - 1; i >= 0; i--)
             if (trash[i])
                 _coms.remove(i);
+    }
+    
+    /**
+    * Direct every computer.
+    */
+    private void playAsComputer() {
+        // make computer move
+        for (Computer com : _coms) {
+            boolean moved = false;
+            ArrayList<Direction> dir = com.think();
+            for (Direction d : dir) {
+                if (com.move(d)) {
+                    System.err.println(com.name() + " move " + dir.toString());
+                    moved = true;
+                    break;
+                }
+            }
+            
+            if (!moved)
+                System.err.println(com.name() + " can not move anyway");
+        }
     }
     
     // ------------------ PLAYER -------------------------
@@ -123,21 +147,7 @@ public class GameModel implements PlayerActionListener {
 
     @Override
     public void playerMoved() {
-        // make computer move
-        for (Computer com : _coms) {
-            boolean moved = false;
-            ArrayList<Direction> dir = com.think();
-            for (Direction d : dir) {
-                if (com.move(d)) {
-                    System.err.println(com.name() + " move " + dir.toString());
-                    moved = true;
-                    break;
-                }
-            }
-            
-            if (!moved)
-                System.err.println(com.name() + " can not move anyway");
-        }
+        playAsComputer();
         
         // generate more food
         if (_level.spin() && field().foodPerSpider() < 1.0) {
