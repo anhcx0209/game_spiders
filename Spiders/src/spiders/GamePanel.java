@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import spiders.figure.Computer;
 import spiders.figure.Player;
+import spiders.figure.Rain;
 import spiders.figure.Spider;
 import spiders.figure.SpiderFood;
 import spiders.figure.Stone;
@@ -108,12 +109,22 @@ public class GamePanel extends JPanel implements KeyListener {
             
             if (obj instanceof Stone)
                 drawStone(g, (Stone)obj);
+            
+            if (obj instanceof Rain)
+                drawRain(g, (Rain)obj);
         }
+    }
+    
+    private void drawRain(Graphics g, Rain r) {
+        Point lefTop = coordPoint(r.position());
+        
+        g.drawImage(rain_image, lefTop.x, lefTop.y, 50, 30, this);
+        
+        g.setColor(Color.BLACK);   // восстанваливаем цвет пера
     }
     
     private void drawStone(Graphics g, Stone s) {
         Point lefTop = coordPoint(s.position());
-        g.setColor(Color.RED);
         
         g.drawImage(rock_image, lefTop.x, lefTop.y, 50, 30, this);
         
