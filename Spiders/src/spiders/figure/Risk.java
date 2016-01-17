@@ -23,13 +23,14 @@ public class Risk extends CobWebObject implements SpiderActionListener {
     
     // ---------------- SPIDER ---------------------------
     protected boolean busy() {
-        return _spider != null;
+        return (_spider != null);
     }
     
     protected Spider _spider;
+   
     
     /**
-     * Spider s move to stone.
+     * Spider s move to risk.
      * @param s who is moving to.
      */
     @Override
