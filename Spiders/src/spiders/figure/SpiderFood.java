@@ -3,7 +3,6 @@ package spiders.figure;
 import java.util.Random;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
-import spiders.navigations.Position;
 
 /**
  * Bug, which is food of spider.

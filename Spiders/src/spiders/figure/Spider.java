@@ -59,7 +59,16 @@ public class Spider extends CobWebObject  {
                 
                 if (cobweb().have(TypeObject.FOOD, newPos)) {
                     SpiderFood food = cobweb().getFood(newPos);
-                    increaseLife(food.size());
+                    
+                    if (food.type() == TypeObject.WASP) {
+                        Wasp w = (Wasp)food;
+                        if (w.canBite()) {
+                            System.err.println(this.name() + "is bited.");
+                            decreaseLife(food.size());
+                        }
+                    } else 
+                        increaseLife(food.size());
+                    
                     cobweb().removeObject(food);
                 }
                 
@@ -72,6 +81,11 @@ public class Spider extends CobWebObject  {
                 for (GameEventListener gel : _gameListeners) {
                     gel.positionChanged();
                 }
+                
+//                for (SpiderActionListener sal : _spiderListeners) {
+//                    sal.spiderMoving(this);
+//                }
+                
                 return true;
             }
         }
@@ -100,4 +114,16 @@ public class Spider extends CobWebObject  {
     public void removeGEL(GameEventListener l) {
         _gameListeners.remove(l);
     }
+    
+//    // ------------------- SPIDER LISTENER -----------------------------
+//    private ArrayList<SpiderActionListener> _spiderListeners = new ArrayList<>();
+//    
+//    public void addSAL(SpiderActionListener l) {
+//        _spiderListeners.add(l);
+//    }
+//    
+//    public void removeSAL(SpiderActionListener l) {
+//        _spiderListeners.remove(l);
+//    }
+    
 }

@@ -15,13 +15,14 @@ public class Wasp extends SpiderFood {
         randomSize(SizeFood.MEDIUM);
         makeFactorEscape(SpiderFood.SizeFood.MEDIUM);
         
-        // random wasp can bite         - 50 - 50
-        Random rn = new Random();
-        int factor = rn.nextInt(2);
-        if (factor == 1)
-            _bite = true;
-        else 
-            _bite = false;
+        // random wasp can bite   
+//        Random rn = new Random();
+//        int factor = rn.nextInt(2);
+//        if (factor == 1)
+//            _bite = true;
+//        else 
+//            _bite = false;
+        _bite = true;
     }
     
     private boolean _bite;

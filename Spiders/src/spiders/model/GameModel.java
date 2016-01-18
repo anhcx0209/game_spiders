@@ -122,7 +122,7 @@ public class GameModel implements PlayerActionListener {
     
     private void checkGameOver() {
         // check game over
-        if (player().life() == 0) {
+        if (player().life() <= 0) {
             for (GameEventListener gel : _gameListeners)
                 gel.gameOver();
         }
@@ -167,7 +167,7 @@ public class GameModel implements PlayerActionListener {
         checkGameOver();
         
         // bugs are escaping
-        field().letBugGoOut();
+        //field().letBugGoOut();
         
         for (GameEventListener gel : _gameListeners)
             gel.positionChanged();
