@@ -113,7 +113,11 @@ public class CobWeb {
         double nFood = 0;
         double nSpider = 0;
         for (CobWebObject e : _objects) {
-            if (e.type() == TypeObject.FOOD) {
+            boolean trueType = false;
+            trueType = (e.type() == TypeObject.FLY || e.type() == TypeObject.GRASSHOPPER
+                || e.type() == TypeObject.MOSQUITO || e.type() == TypeObject.WASP);
+            
+            if (trueType) {
                 nFood = nFood + 1;
             }
             if (e.type() == TypeObject.COMPUTER) {
@@ -141,9 +145,14 @@ public class CobWeb {
      */
     public ArrayList<CobWebObject> objects(TypeObject type) {
         ArrayList<CobWebObject> ret = new ArrayList<>();
-        for (CobWebObject e : _objects) {
-            if (e.type() == type) {
-                ret.add(e);
+        for (CobWebObject obj : _objects) {
+            boolean trueType = false;
+            if (type == TypeObject.FOOD)
+                trueType = (obj.type() == TypeObject.FLY || obj.type() == TypeObject.GRASSHOPPER
+                        || obj.type() == TypeObject.MOSQUITO || obj.type() == TypeObject.WASP);
+
+            if (trueType) {
+                ret.add(obj);
             }
         }
         return ret;
@@ -181,8 +190,13 @@ public class CobWeb {
      * @return food in position
      */
     public SpiderFood getFood(Position pos) {
+        boolean trueType;
+        
         for (CobWebObject obj : _objects) {
-            if (obj.position().equals(pos) && obj.type() == TypeObject.FOOD) {
+            trueType = (obj.type() == TypeObject.FLY || obj.type() == TypeObject.GRASSHOPPER
+                            || obj.type() == TypeObject.MOSQUITO || obj.type() == TypeObject.WASP);
+            
+            if (obj.position().equals(pos) && trueType) {
                 return (SpiderFood)obj;
             }
         }
