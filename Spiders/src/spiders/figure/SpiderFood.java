@@ -19,7 +19,6 @@ public abstract class SpiderFood extends CobWebObject {
      */
     public SpiderFood(CobWeb cw) {
         super(cw);
-        _position = cobweb().getFreePosition();
     }
     
     // ------------------ size ----------------------
@@ -76,7 +75,7 @@ public abstract class SpiderFood extends CobWebObject {
     public boolean failIntoWeb() {
 //        Random rn = new Random();
 //        int factor = rn.nextInt(10) + 1;
-//        if (factor == 1 || factor == 2 || factor == 3) {
+//        if (factor == 2 || factor == 3) {
 //            Position pos = cobweb().getFreePosition();
 //            if (pos != null) {
 //                setPosition(pos);
@@ -86,6 +85,7 @@ public abstract class SpiderFood extends CobWebObject {
 //        }
 //        else 
 //            return false;
+        setPosition(cobweb().getFreePosition());
         return true;
     }
     
@@ -93,12 +93,29 @@ public abstract class SpiderFood extends CobWebObject {
 
     int[] _factorEscape;
     
-    private void makeFactor() {
-        _factorEscape = new int[_size]; // 10 % gen food
+    protected void makeFactorEscape(SizeFood cls) {
+        int percent = 0;
+        
+        switch (cls) {
+            case SMALL:
+                percent = 10;
+                break;
+            case MEDIUM:
+                percent = 20;
+                break;
+            case HUGE:
+                percent = 30;
+                break;
+            default:
+                throw new AssertionError(cls.name());
+            
+        }
+        
+        _factorEscape = new int[percent]; // 50 % escape
         
         boolean[] flag = new boolean[100];
         Random rn = new Random();
-        for (int i = 0; i < _size; i++) {
+        for (int i = 0; i < percent; i++) {
             boolean ok = true;
             while (ok) {
                 int k = rn.nextInt(100);
@@ -119,8 +136,11 @@ public abstract class SpiderFood extends CobWebObject {
         Random rand = new Random();
         int x = rand.nextInt(100);
         for (int i = 0; i < _factorEscape.length; i++)
-            if (_factorEscape[i] == x)
+            if (_factorEscape[i] == x) {
+                
                 return true;
+            }
+                
         
         return false;
     }
