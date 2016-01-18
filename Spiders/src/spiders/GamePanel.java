@@ -18,6 +18,7 @@ import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Spider;
 import spiders.figure.SpiderFood;
+import spiders.figure.SpiderFood.SizeFood;
 import spiders.model.CobWebObject;
 import spiders.model.GameModel;
 import spiders.navigations.Direction;
@@ -67,6 +68,8 @@ public class GamePanel extends JPanel implements KeyListener {
     public static BufferedImage mosquite_image;
     public static BufferedImage rain_image;
     public static BufferedImage rock_image;
+    public static BufferedImage wasp_image;
+    public static BufferedImage grass_image;
     
     private void readImage() {
         try {
@@ -74,6 +77,8 @@ public class GamePanel extends JPanel implements KeyListener {
             spd_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\spider.png"));
             fly_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\fly.png"));
             mosquite_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\mosquito.png"));
+            wasp_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\wasp.png"));
+            grass_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\grass.png"));
             rain_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\drop.png"));
             rock_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\rock.png"));
         } catch (IOException ex) {
@@ -112,7 +117,27 @@ public class GamePanel extends JPanel implements KeyListener {
         g.setColor(Color.RED);
         String str = " " + f.size();
         
-        g.drawImage(fly_image, lefTop.x, lefTop.y, 50, 30, this);
+        switch (f.type()) {
+            case COMPUTER:
+            case PLAYER:
+            case FOOD:
+                break;
+            case FLY:
+                g.drawImage(fly_image, lefTop.x, lefTop.y, 50, 30, this);
+                break;
+            case MOSQUITO:
+                g.drawImage(mosquite_image, lefTop.x, lefTop.y, 50, 30, this);
+                break;
+            case WASP:
+                g.drawImage(wasp_image, lefTop.x, lefTop.y, 50, 30, this);
+                break;
+            case GRASSHOPPER:
+                g.drawImage(grass_image, lefTop.x, lefTop.y, 50, 30, this);
+                break;
+            default:
+                throw new AssertionError(f.type().name());
+            
+        }
         
         g.drawString(str, lefTop.x + (5 * CELL_SIZE)/8, lefTop.y + (2 * CELL_SIZE)/4 + FONT_HEIGHT);
         
@@ -138,7 +163,6 @@ public class GamePanel extends JPanel implements KeyListener {
     // ---------------- KEY EVENT-------------------------------------
     @Override
     public void keyTyped(KeyEvent ke) {
-        
     }
 
     @Override
