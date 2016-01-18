@@ -44,7 +44,7 @@ public class CobWeb {
             }
         }
         
-        System.err.println("Capture : " + count);
+        System.err.println("Capture : " + count + "/" + outFood.size());
     }
     
     // ------------------- get free position --------
