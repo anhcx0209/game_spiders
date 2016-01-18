@@ -17,6 +17,7 @@ public class Grasshopper extends SpiderFood {
         super(cw);
         _type = TypeObject.GRASSHOPPER;
         randomSize(SizeFood.HUGE);
+        makeFactorEscape(SpiderFood.SizeFood.HUGE);
     }
     
 }

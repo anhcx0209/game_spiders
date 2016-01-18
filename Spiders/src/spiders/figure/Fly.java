@@ -17,6 +17,7 @@ public class Fly extends SpiderFood {
         super(cw);
         _type = TypeObject.FLY;
         randomSize(SizeFood.SMALL);
+        makeFactorEscape(SpiderFood.SizeFood.SMALL);
     }
     
 }

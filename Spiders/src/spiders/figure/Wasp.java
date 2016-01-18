@@ -13,6 +13,7 @@ public class Wasp extends SpiderFood {
         super(cw);
         _type = TypeObject.WASP;
         randomSize(SizeFood.MEDIUM);
+        makeFactorEscape(SpiderFood.SizeFood.MEDIUM);
         
         // random wasp can bite         - 50 - 50
         Random rn = new Random();

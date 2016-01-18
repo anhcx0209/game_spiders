@@ -17,6 +17,7 @@ public class Mosquito extends SpiderFood {
         super(cw);
         _type = TypeObject.MOSQUITO;
         randomSize(SizeFood.SMALL);
+        makeFactorEscape(SpiderFood.SizeFood.SMALL);
     }
     
 }
