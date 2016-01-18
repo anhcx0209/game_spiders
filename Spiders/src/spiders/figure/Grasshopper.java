@@ -52,8 +52,10 @@ public class Grasshopper extends SpiderFood {
      */
     public void jump() {
         Random rand = new Random();
+        
+        boolean ok = false;
         int x = rand.nextInt(100);
-        for (int i = 0; i < _factorJump.length; i++)
+        for (int i = 0; i < _factorJump.length; i++) {
             if (_factorJump[i] == x) {
                 Position oldPos = _position;
                 Position newPos = cobweb().getFreePosition();
@@ -61,6 +63,16 @@ public class Grasshopper extends SpiderFood {
                 
                 System.err.println("Grasshopper in " + oldPos.toString()
                         + " is jumped to " + newPos.toString());
+                
+                ok = true;
             }
+        }   
+        
+        // decrease percent to jump
+        if (ok) {
+            _percentJump -= 10;
+            makeFactorJump();
+        }
+            
     }
 }
