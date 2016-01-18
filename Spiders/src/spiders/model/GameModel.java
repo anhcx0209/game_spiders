@@ -168,6 +168,7 @@ public class GameModel implements PlayerActionListener {
         
         // bugs are escaping
         //field().letBugGoOut();
+        field().letGrasshopperChangePos();
         
         for (GameEventListener gel : _gameListeners)
             gel.positionChanged();

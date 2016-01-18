@@ -2,6 +2,7 @@ package spiders.model;
 
 import java.util.ArrayList;
 import java.util.Random;
+import spiders.figure.Grasshopper;
 import spiders.figure.SpiderFood;
 import spiders.model.CobWebObject.TypeObject;
 import spiders.navigations.Position;
@@ -150,7 +151,8 @@ public class CobWeb {
             if (type == TypeObject.FOOD)
                 trueType = (obj.type() == TypeObject.FLY || obj.type() == TypeObject.GRASSHOPPER
                         || obj.type() == TypeObject.MOSQUITO || obj.type() == TypeObject.WASP);
-
+            else
+                trueType = obj.type() == type;
             if (trueType) {
                 ret.add(obj);
             }
@@ -212,6 +214,17 @@ public class CobWeb {
                 System.err.println("Bug in " + sf.position().toString() + " is gone.");
                 removeObject(sf);
             }
+        }
+    }
+    
+    /**
+     * Grasshopper can jump
+     */
+    public void letGrasshopperChangePos() {
+        ArrayList<CobWebObject> bugs = objects(TypeObject.GRASSHOPPER);
+        for (CobWebObject obj : bugs) {
+            Grasshopper sf = (Grasshopper)obj;
+            sf.jump();
         }
     }
 }

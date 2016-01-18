@@ -89,7 +89,6 @@ public abstract class SpiderFood extends CobWebObject {
     }
     
     // --------------------- FACTOR TO ESCAPE -------------------
-
     int[] _factorEscape;
     
     protected void makeFactorEscape(SizeFood cls) {
