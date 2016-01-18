@@ -35,9 +35,7 @@ public class FoodFactory {
         ArrayList<SpiderFood> ret = new ArrayList<>();
         for (int i = 0; i < number; i++) {
             Random rnd = new Random();
-            
             int f = rnd.nextInt(15) + 1;
-            
             ret.add(getFood(f));
         }
         return ret;
