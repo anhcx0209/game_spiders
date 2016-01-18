@@ -11,25 +11,62 @@ import spiders.navigations.Position;
  * They can be eaten by spider, spider will convert their value to life.
  * @author anhcx
  */
-public class SpiderFood extends CobWebObject {
-
+public abstract class SpiderFood extends CobWebObject {
+    
     /**
      * Generate a spider's food
      * @param cw cobweb which food can be fall into.
      */
     public SpiderFood(CobWeb cw) {
         super(cw);
-        _type = TypeObject.FOOD;
-        makeFactor();
+        _position = cobweb().getFreePosition();
     }
-    
     
     // ------------------ size ----------------------
     // size of food, it is value life will be increase when spider eat
-    private int _size = 6;          
+    private int _size;
     
     public int size() {
         return _size;
+    }
+    
+    public enum SizeFood {
+        SMALL, MEDIUM, HUGE
+    }
+    
+    public SizeFood sizeFood() {
+        if (_size >= 1 && _size <= 10)
+            return SizeFood.SMALL;
+        else
+            if (_size >= 11 && _size <= 13)
+                return SizeFood.MEDIUM;
+            else
+                return SizeFood.HUGE;
+            
+    }
+    
+    protected void randomSize(SizeFood cls) {
+        Random rnd = new Random();
+        int min = 0;
+        int max = 0;
+        switch (cls) {
+            case SMALL:
+                min = 1;
+                max = 10;
+                break;
+            case MEDIUM:
+                min = 11;
+                max = 13;
+                break;
+            case HUGE:
+                min = 15;
+                max = 14;
+                break;
+            default:
+                throw new AssertionError(cls.name());
+        }
+        
+        _size = min + rnd.nextInt(max - min + 2);
     }
     
     /**
@@ -37,18 +74,19 @@ public class SpiderFood extends CobWebObject {
      * @return action successful or not
      */
     public boolean failIntoWeb() {
-        Random rn = new Random();
-        int factor = rn.nextInt(10) + 1;
-        if (factor == 1 || factor == 2 || factor == 3) {
-            Position pos = cobweb().getFreePosition();
-            if (pos != null) {
-                setPosition(pos);
-                return true;
-            } else 
-                return false;
-        }
-        else 
-            return false;
+//        Random rn = new Random();
+//        int factor = rn.nextInt(10) + 1;
+//        if (factor == 1 || factor == 2 || factor == 3) {
+//            Position pos = cobweb().getFreePosition();
+//            if (pos != null) {
+//                setPosition(pos);
+//                return true;
+//            } else 
+//                return false;
+//        }
+//        else 
+//            return false;
+        return true;
     }
     
     // --------------------- FACTOR TO ESCAPE -------------------
