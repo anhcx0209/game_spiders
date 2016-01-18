@@ -15,7 +15,7 @@ public abstract class CobWebObject {
      * RISK - drop rain and rock, what is harmful for spider
      */
     public enum TypeObject {
-        COMPUTER, PLAYER, FOOD, RAIN, STONE
+        COMPUTER, PLAYER, FOOD, FLY, MOSQUITO, WASP, GRASSHOPPER
     }
     
     // --------------------- Type ---------------
