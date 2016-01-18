@@ -160,7 +160,13 @@ public class CobWeb {
     public boolean have(TypeObject type, Position pos) {
         if (pos.isValid()) {
             for (CobWebObject obj : _objects) {
-                if (obj.position().equals(pos) && obj.type() == type) {
+                boolean trueType = false;
+                if (type == TypeObject.FOOD)
+                    trueType = (obj.type() == TypeObject.FLY || obj.type() == TypeObject.GRASSHOPPER
+                            || obj.type() == TypeObject.MOSQUITO || obj.type() == TypeObject.WASP);
+                else
+                    trueType = obj.type() == type;
+                if (obj.position().equals(pos) && trueType) {
                     return true;
                 }
             }
