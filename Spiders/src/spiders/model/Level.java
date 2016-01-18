@@ -78,7 +78,7 @@ public class Level {
         return false;
     }
     
-    // --------------------- STATIC FUNCTIONS ----------------------------
+    // --------------------- ALL LEVELS  ----------------------------
     
     /**
      * Create a level with difficulty - hard.
