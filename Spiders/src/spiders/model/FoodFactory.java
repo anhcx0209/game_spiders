@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package spiders.model;
 import java.util.ArrayList;
 import spiders.figure.SpiderFood;
@@ -29,8 +24,11 @@ public class FoodFactory {
         ArrayList<SpiderFood> ret = new ArrayList<>();
         for (int i = 0; i < number; i++) {
             SpiderFood sf = new SpiderFood(_gameModel.field());
-            sf.setName("Bug" + i);
-            ret.add(sf);
+            
+            if (sf.failIntoWeb()) {
+                sf.setName("Bug " + i);
+                ret.add(sf);
+            }
         }
         return ret;
     }
