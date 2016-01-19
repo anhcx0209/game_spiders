@@ -93,7 +93,7 @@ public class Computer extends Spider implements PlayerActionListener {
         boolean moved = false;
         ArrayList<Direction> dir = think();
         for (Direction d : dir) {
-            if (move(d)) {
+            if (moveTo(d)) {
                 System.err.println(name() + " move " + dir.toString());
                 moved = true;
                 break;

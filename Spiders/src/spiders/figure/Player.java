@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import spiders.events.PlayerActionListener;
 import spiders.model.CobWeb;
 import spiders.navigations.Direction;
-import spiders.views.SpiderView;
 
 /**
  * Player is spider controlled by user.
@@ -23,8 +22,8 @@ public class Player extends Spider {
     }
     
     
-    public void playerMove(Direction dir) {
-        if (move(dir)) {
+    public void move(Direction dir) {
+        if (moveTo(dir)) {
             // fire event to game model
             for (PlayerActionListener pal : _playerListeners)   
                 pal.playerMoved();

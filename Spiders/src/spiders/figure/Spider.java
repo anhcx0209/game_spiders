@@ -7,7 +7,6 @@ import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
 import spiders.navigations.Direction;
 import spiders.navigations.Position;
-import spiders.views.ObjectView;
 import spiders.views.SpiderView;
 
 /**
@@ -39,7 +38,7 @@ public abstract class Spider extends CobWebObject {
      * decrease spider's life
      * @param amount - number of life is decreased
      */
-    public void decreaseLife(int amount) {
+    private void decreaseLife(int amount) {
         _life -= amount;
     }
     
@@ -47,7 +46,7 @@ public abstract class Spider extends CobWebObject {
      * increase spider's life
      * @param amount - number of life is added
      */
-    public void increaseLife(int amount) {
+    private void increaseLife(int amount) {
         _life += amount;
     }
     
@@ -67,11 +66,11 @@ public abstract class Spider extends CobWebObject {
     }
     
     /**
-     * Spider move.
+     * Spider try to move a position.
      * @param direct direction to moving.
-     * @return moved or not
+     * @return moved or not.
      */
-    public boolean move(Direction direct) {
+    public boolean moveTo(Direction direct) {
         if (this.life() > 0) {
             if (moveIsPossible(direct)) {
                 Position newPos = position().next(direct);
