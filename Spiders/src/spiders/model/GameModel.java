@@ -11,60 +11,69 @@ import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
 /**
- * Game model, determine when player have to end game, control the computers...
+ * Game model, objects control logic game and play as computers.
  * @author anhcx
  */
 public class GameModel implements PlayerActionListener {
     
-    private CobWeb _field;  // cobweb - where player play on
-    private Level _level;
+    private CobWeb _field;  // field - where player play on.
+    private Level _level;   // level of game.
     
     /**
-     * getter for _field
-     * @return cobweb - where game is based on
+     * This is getter, return field, where spiders are moving on.
+     * @return cobweb where game is based on.
      */
     public CobWeb field() {
         return _field;
     }
     
     /**
-     * @return level of game
+     * This is getter, return level of game is based on.
+     * @return level - difficulty of game.
      */
     public Level level() {
         return _level;
     }
     
+    // ---------------------- FACTORY ------------------------
+    private RainFactory _rainFact = new RainFactory(this);
+    
     /**
-     * create a game model with pre-defined level
-     * level = hard, medium and easy
-     * @param l pre-define level for game model
+     * This is constructor, create a game model with pre-defined level
+     * hard, easy or medium.
+     * @param l pre-define level for game model.
      */
     public GameModel(Level l) {
+        // create cobweb to play.
         _step = 0;
         _field = new CobWeb(l.baseSize());
-        Position.setHorizontalRange(1, l.baseSize());
-        Position.setVerticalRange(1, l.baseSize());
         _level = l;
         
-        // create new player
-        _player = new Player(_field);
-        _player.setName("player");
-        _player.addPAL(this);
-        _field.addObject(_player);
+        // set range for position.
+        Position.setHorizontalRange(1, l.baseSize());
+        Position.setVerticalRange(1, l.baseSize());
         
-        // create computer 
-        for (int i = 0; i < _level.numberCom(); i++) {
+        // create player 
+        _player = new Player(_field);
+        
+        for (int i = 0; i < _level.numberOfComputers(); i++) {
             Computer com = new Computer(_field);
             com.setName("Com" + i);
             _coms.add(com);
-            _field.addObject(com);
         }
-            
+        
+        setUpField();
+        
+    }
+    
+    private void setUpField() {
+        _rainFact.createRains(level().numberOfRain());
+        
         // create food
-        _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+        _field.captureFoods(_foodFact.createFood(_level.numberOfFoods()));
         
         // create stone
-        for (int i = 0; i < _level.numberStone(); i++) {
+        for (int i = 0; i < _level.numberOfStone(); i++) {
             Stone s = new Stone(_field);
             _field.addObject(s);
             
@@ -74,16 +83,15 @@ public class GameModel implements PlayerActionListener {
                 com.addSAL(s);
         }
         
-        // create rain
-        ArrayList<Rain> rains = _rainFact.createRains();
-        for (Rain rain : rains) {
-            _rains.add(rain);
-            field().addObject(rain);
-            
-            // add listener
-            _player.addSAL(rain);
-            for (Computer com : _coms)
-                com.addSAL(rain);
+        // set position player and computer
+        _player.setName("player");
+        _player.setPosition(field().getFreePosition());
+        field().addObject(_player);
+        _player.addPAL(this);
+        
+        for (Computer com : _coms) {
+            com.setPosition(field().getFreePosition());
+            field().addObject(com);
         }
     }
     
@@ -94,29 +102,7 @@ public class GameModel implements PlayerActionListener {
         return _coms;
     }
     
-    /**
-    * Check computer if it die.
-    */
-    private void checkComDie() {
-        boolean[] trash = new boolean[_coms.size()];
         
-        for (int i = 0; i < _coms.size(); i++) {
-            if (_coms.get(i).life() == 0) {
-                field().removeObject(_coms.get(i));
-                trash[i] = true;
-                
-                // fire trigger to game panel
-                for (GameEventListener gel : _gameListeners)
-                    gel.positionChanged();
-            }
-        }
-        
-        // remove from _coms
-        for (int i = trash.length - 1; i >= 0; i--)
-            if (trash[i])
-                _coms.remove(i);
-    }
-    
     /**
     * Direct every computer.
     */
@@ -146,32 +132,38 @@ public class GameModel implements PlayerActionListener {
     }
     
     private void checkGameOver() {
-        // check game over
+        
+        // check computers
+        for (Computer com : _coms) {
+            if (com.life() == 0)
+                field().removeObject(com);
+        }
+        
+        // check player
         if (player().life() == 0) {
+            field().removeObject(_player);
             for (GameEventListener gel : _gameListeners)
                 gel.gameOver();
         }
     }
     
-    // ------------------- RAIN FACTORY ------------------
-    private RainFactory _rainFact = new RainFactory(this);
-    
     // ------------------- Rain --------------------------
-    private ArrayList<Rain> _rains = new ArrayList<>();
-    
     private void makeRainMove() {
-        for (Rain rain : _rains)
-            rain.moveDown();
+        ArrayList<CobWebObject> rains = field().objects(CobWebObject.TypeObject.RAIN);
+        for (CobWebObject obj : rains) {
+            Rain r = (Rain)obj;
+            r.moveDown();
+        }
     }
     
     
     // ------------------- FOOD FACTORY ------------------
     private FoodFactory _foodFact = new FoodFactory(this);
     
-    private void spendMoreFood() {
+    public void giveMoreFood() {
         // generate more food
         if (_level.spin() && field().foodPerSpider() < 1.0) {
-            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+            _field.captureFoods(_foodFact.createFood(_level.numberOfFoods()));
             
             // fire trigger to game panel
             for (GameEventListener gel : _gameListeners)
@@ -197,10 +189,7 @@ public class GameModel implements PlayerActionListener {
     public void playerMoved() {
         playAsComputer();
         
-        spendMoreFood();
-        
         // check computer die and remove it
-        checkComDie();
         checkGameOver();
         
         // bugs are escaping
