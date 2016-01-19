@@ -1,24 +1,24 @@
-package spiders.model;
+package spider.factory;
 
 import java.util.ArrayList;
-import java.util.Random;
 import spiders.figure.Computer;
 import spiders.figure.Rain;
+import spiders.model.GameModel;
 
 /**
  * Factory to generate rain.
  * @author anhcx
  */
-public class RainFactory {
-    private GameModel _gameModel;
-    
+public class RainFactory extends ObjectFactory {
+
     /**
-     * Constructor to create rain factory.
-     * @param gm game model which factory will base on.
+     * Constructor with a model.
+     * @param gm game model.
      */
     public RainFactory(GameModel gm) {
-        _gameModel = gm;
+        super(gm);
     }
+    
     
     /**
      * Create n drop rain on the first line of cobweb.
@@ -29,22 +29,22 @@ public class RainFactory {
     public ArrayList<Rain> createRains(int n) {
         ArrayList<Rain> ret = new ArrayList<>();
         
-        Random rand = new Random();
         
         for (int i = 1; i <= n; i++) {
             // create rain
-            Rain r = new Rain(_gameModel.field());
-            r.setPosition(_gameModel.field().getFreePosition(1));
+            Rain r = new Rain(model().field());
+            r.setPosition(model().field().getFreePosition(1));
             
             // add spider listener
-            _gameModel.player().addSAL(r);
-            for (Computer com : _gameModel.computers()) {
+            model().player().addSAL(r);
+            for (Computer com : model().computers()) {
                 com.addSAL(r);
             }
             
-            _gameModel.field().addObject(r);
+            model().field().addObject(r);
             
             ret.add(r);
+            model().addGML(r);
         }
         
         return ret;
