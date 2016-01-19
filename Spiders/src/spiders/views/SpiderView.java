@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package spiders.views;
 
 import java.awt.Color;
@@ -20,6 +15,10 @@ public class SpiderView extends ObjectView {
     private static final String PLAYER_IMG = ROOT.concat("\\image\\player.png");
     private static final String COMPUTER_IMG = ROOT.concat("\\image\\computer.png");
     
+    /**
+     * Constructor with a spider.
+     * @param obj - spider.
+     */
     public SpiderView(Spider obj) {
         super(obj);
         if (obj instanceof Player)
@@ -30,13 +29,11 @@ public class SpiderView extends ObjectView {
     
     @Override
     public void drawOn(Graphics g, GamePanel p) {
+        drawImage(g, p);
         Spider s = (Spider)object();
-        
         Point pos = p.coordPoint(s.position());
         String str = "" + s.life();
-        
         g.setColor(Color.RED);
-        g.drawImage(_image, pos.x, pos.y, 50, 30, p);
         g.drawString(str, pos.x + (5 * p.cellSize())/8, pos.y + (2 * p.cellSize())/4 + p.fontHeight());
     }
     

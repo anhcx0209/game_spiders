@@ -3,6 +3,7 @@ package spiders.figure;
 import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
+import spiders.views.HolderView;
 
 /**
  * Holder is object can hold spider and bugs for a number of step
@@ -17,6 +18,7 @@ public abstract class Holder extends CobWebObject implements SpiderActionListene
      */
     protected Holder(CobWeb cw) {
         super(cw);
+        _view = new HolderView(this);
     }
     
     // --------------- HOLDING SPIDER -------------------------

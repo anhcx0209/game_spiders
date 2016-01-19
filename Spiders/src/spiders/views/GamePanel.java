@@ -6,20 +6,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import spiders.figure.Computer;
-import spiders.figure.Player;
-import spiders.figure.Rain;
-import spiders.figure.Spider;
-import spiders.figure.SpiderFood;
-import spiders.figure.Stone;
 import spiders.model.CobWebObject;
 import spiders.model.GameModel;
 import spiders.navigations.Direction;
@@ -39,13 +27,9 @@ public class GamePanel extends JPanel implements KeyListener {
      */
     public GamePanel(GameModel gm) {
         _model = gm;
-        
         int size = 2 * GAP + CELL_SIZE * (_model.field().size() - 1);
         
-        //setSize(new Dimension(size, size));
         setPreferredSize(new Dimension(size, size));
-        readImage();
-        
         addKeyListener(this);    
     }
     
@@ -70,27 +54,6 @@ public class GamePanel extends JPanel implements KeyListener {
     private static final Color BG_COLOR = new Color(175, 225, 175);
     private static final Color GRID_COLOR = Color.GREEN;
     
-    // --------------------IMAGE---------------------------
-    public static BufferedImage player_image;
-    public static BufferedImage spd_image;
-    public static BufferedImage fly_image;
-    public static BufferedImage mosquite_image;
-    public static BufferedImage rain_image;
-    public static BufferedImage rock_image;
-    
-    private void readImage() {
-        try {
-            player_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\player.png"));
-            spd_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\spider.png"));
-            fly_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\fly.png"));
-            mosquite_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\mosquito.png"));
-            rain_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\drop.png"));
-            rock_image = ImageIO.read(new File("D:\\AnhCX\\Documents\\NetBeansProjects\\Spiders\\media\\rock.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
     // ---------------- PAINT COMPONENTS ------------------
     @Override
     public void paintComponent(Graphics g) {
@@ -108,72 +71,10 @@ public class GamePanel extends JPanel implements KeyListener {
         // draw player
         ArrayList<CobWebObject> lists = _model.field().objects();
         for (CobWebObject obj : lists) {
-            
-            if (obj instanceof Spider) 
-                //drawSpider(g, (Spider)obj);
-                drawObject(g, obj);
-            
-//            if (obj instanceof SpiderFood)
-//                drawFood(g, (SpiderFood)obj);
-//            
-//            if (obj instanceof Stone)
-//                drawStone(g, (Stone)obj);
-//            
-//            if (obj instanceof Rain)
-//                drawRain(g, (Rain)obj);
+            obj.view().drawOn(g, this);
         }
     }
     
-    private void drawObject(Graphics g, CobWebObject obj) {
-        Point lefTop = coordPoint(obj.position());
-        //g.drawImage(obj.view().image(), lefTop.x, lefTop.y, 50, 30, this);
-        obj.view().drawOn(g, this);
-    }
-    
-    private void drawRain(Graphics g, Rain r) {
-        Point lefTop = coordPoint(r.position());
-        
-        g.drawImage(rain_image, lefTop.x, lefTop.y, 50, 30, this);
-        
-        g.setColor(Color.BLACK);   // восстанваливаем цвет пера
-    }
-    
-    private void drawStone(Graphics g, Stone s) {
-        Point lefTop = coordPoint(s.position());
-        
-        g.drawImage(rock_image, lefTop.x, lefTop.y, 50, 30, this);
-        
-        g.setColor(Color.BLACK);   // восстанваливаем цвет пера
-    }
-    
-    private void drawFood(Graphics g, SpiderFood f) {
-        Point lefTop = coordPoint(f.position());
-        g.setColor(Color.RED);
-        String str = " " + f.size();
-        
-        g.drawImage(fly_image, lefTop.x, lefTop.y, 50, 30, this);
-        
-        g.drawString(str, lefTop.x + (5 * CELL_SIZE)/8, lefTop.y + (2 * CELL_SIZE)/4 + FONT_HEIGHT);
-        
-        g.setColor(Color.BLACK);   // восстанваливаем цвет пера
-    }
-    
-    private void drawSpider(Graphics g, Spider s) {
-        Point lefTop = coordPoint(s.position());
-        g.setColor(Color.RED);
-        String str = " " + s.life();
-        
-        if (s instanceof Player)
-            g.drawImage(player_image, lefTop.x, lefTop.y, 50, 30, null);
-        
-        if (s instanceof Computer)
-            g.drawImage(spd_image, lefTop.x, lefTop.y, 50, 30, this);
-        
-        g.drawString(str, lefTop.x + (5 * CELL_SIZE)/8, lefTop.y + (2 * CELL_SIZE)/4 + FONT_HEIGHT);
-        
-        g.setColor(Color.BLACK);   // восстанваливаем цвет пера
-    }
-
     // ---------------- KEY EVENT-------------------------------------
     @Override
     public void keyTyped(KeyEvent ke) {

@@ -4,6 +4,7 @@ import java.util.Random;
 import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
+import spiders.views.FoodView;
 
 /**
  * Bug, which is food of spider.
@@ -24,6 +25,7 @@ public class SpiderFood extends CobWebObject implements SpiderActionListener {
         _size = rn.nextInt(11) + 1;
         _stuned = false;
         makeFactor();
+        _view = new FoodView(this);
     }
     
     // ------------------ stun ----------------------

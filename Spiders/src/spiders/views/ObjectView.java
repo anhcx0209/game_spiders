@@ -1,6 +1,7 @@
 package spiders.views;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +57,11 @@ public abstract class ObjectView {
         } catch (IOException ex) {
             Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    protected void drawImage(Graphics g, GamePanel p) {
+        Point pos = p.coordPoint(object().position());
+        g.drawImage(image(), pos.x, pos.y, 50, 30, p);
     }
     
     /**
