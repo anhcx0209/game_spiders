@@ -6,13 +6,12 @@
 package spiders.figure;
 
 import java.util.ArrayList;
-import spiders.events.GameEventListener;
 import spiders.events.PlayerActionListener;
 import spiders.model.CobWeb;
 import spiders.navigations.Direction;
 
 /**
- *
+ * Player is spider controlled by user.
  * @author anhcx
  */
 public class Player extends Spider {

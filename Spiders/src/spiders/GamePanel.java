@@ -115,6 +115,11 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
     
+    private void drawObject(Graphics g, CobWebObject obj) {
+        
+        
+    }
+    
     private void drawRain(Graphics g, Rain r) {
         Point lefTop = coordPoint(r.position());
         

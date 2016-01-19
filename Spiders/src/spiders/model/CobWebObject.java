@@ -62,4 +62,5 @@ public abstract class CobWebObject {
         _position = pos;
         cobweb()._mark[_position.row()][_position.column()]++;
     }
+    
 }

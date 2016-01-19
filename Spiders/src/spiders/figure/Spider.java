@@ -13,7 +13,7 @@ import spiders.navigations.Position;
  * couple of seconds.
  * @author anhcx
  */
-public class Spider extends CobWebObject  {
+public abstract class Spider extends CobWebObject {
 
     /**
      * generate a spider with his cobweb
