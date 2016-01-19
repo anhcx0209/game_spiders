@@ -50,20 +50,14 @@ public class SpiderFood extends CobWebObject {
     }
     
     /**
-     * bug fall in to web an be sticked there.
-     * @return action successful or not
+     * Bug can fall in to web an be sticked there.
+     * @return action successful or not.
      */
     public boolean failIntoWeb() {
         Random rn = new Random();
         int factor = rn.nextInt(10) + 1;
-        if (factor == 1 || factor == 2 || factor == 3) {
-            Position pos = cobweb().getFreePosition();
-            if (pos != null) {
-                setPosition(pos);
-                return true;
-            } else 
-                return false;
-        }
+        if (factor == 1 || factor == 2 || factor == 3) 
+            return true;
         else 
             return false;
     }
@@ -104,4 +98,5 @@ public class SpiderFood extends CobWebObject {
         
         return false;
     }
+    
 }
