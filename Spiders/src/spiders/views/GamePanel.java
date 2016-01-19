@@ -1,4 +1,4 @@
-package spiders;
+package spiders.views;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -58,6 +58,14 @@ public class GamePanel extends JPanel implements KeyListener {
     private static final int GAP = 30;
     private static final int FONT_HEIGHT = 15;
     
+    int cellSize() {
+        return CELL_SIZE;
+    }
+    
+    int fontHeight() {
+        return FONT_HEIGHT;
+    }
+    
     // --------------------COLOR---------------------------
     private static final Color BG_COLOR = new Color(175, 225, 175);
     private static final Color GRID_COLOR = Color.GREEN;
@@ -102,22 +110,24 @@ public class GamePanel extends JPanel implements KeyListener {
         for (CobWebObject obj : lists) {
             
             if (obj instanceof Spider) 
-                drawSpider(g, (Spider)obj);
+                //drawSpider(g, (Spider)obj);
+                drawObject(g, obj);
             
-            if (obj instanceof SpiderFood)
-                drawFood(g, (SpiderFood)obj);
-            
-            if (obj instanceof Stone)
-                drawStone(g, (Stone)obj);
-            
-            if (obj instanceof Rain)
-                drawRain(g, (Rain)obj);
+//            if (obj instanceof SpiderFood)
+//                drawFood(g, (SpiderFood)obj);
+//            
+//            if (obj instanceof Stone)
+//                drawStone(g, (Stone)obj);
+//            
+//            if (obj instanceof Rain)
+//                drawRain(g, (Rain)obj);
         }
     }
     
     private void drawObject(Graphics g, CobWebObject obj) {
-        
-        
+        Point lefTop = coordPoint(obj.position());
+        //g.drawImage(obj.view().image(), lefTop.x, lefTop.y, 50, 30, this);
+        obj.view().drawOn(g, this);
     }
     
     private void drawRain(Graphics g, Rain r) {
@@ -154,7 +164,7 @@ public class GamePanel extends JPanel implements KeyListener {
         String str = " " + s.life();
         
         if (s instanceof Player)
-            g.drawImage(player_image, lefTop.x, lefTop.y, 50, 30, this);
+            g.drawImage(player_image, lefTop.x, lefTop.y, 50, 30, null);
         
         if (s instanceof Computer)
             g.drawImage(spd_image, lefTop.x, lefTop.y, 50, 30, this);
@@ -199,7 +209,7 @@ public class GamePanel extends JPanel implements KeyListener {
     }
     
     // ---------------------- GET LEFT TOP ----------------------
-    private Point coordPoint(Position pos) {
+    Point coordPoint(Position pos) {
         int left = GAP + CELL_SIZE * (pos.column()-1) - 25;
         int top = GAP + CELL_SIZE * (pos.row()-1) - 25;
         

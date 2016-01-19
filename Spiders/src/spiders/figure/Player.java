@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import spiders.events.PlayerActionListener;
 import spiders.model.CobWeb;
 import spiders.navigations.Direction;
+import spiders.views.SpiderView;
 
 /**
  * Player is spider controlled by user.

@@ -1,6 +1,7 @@
 package spiders.model;
 
 import spiders.navigations.Position;
+import spiders.views.ObjectView;
 
 /**
  * Objects exist on cobweb.
@@ -63,4 +64,10 @@ public abstract class CobWebObject {
         cobweb()._mark[_position.row()][_position.column()]++;
     }
     
+    // --------------- Appearence ---------------
+    protected ObjectView _view;
+    
+    public ObjectView view() {
+        return _view;
+    }
 }

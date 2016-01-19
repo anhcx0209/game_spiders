@@ -1,4 +1,4 @@
-package spiders;
+package spiders.views;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

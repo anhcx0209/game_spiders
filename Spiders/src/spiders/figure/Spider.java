@@ -7,6 +7,8 @@ import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
 import spiders.navigations.Direction;
 import spiders.navigations.Position;
+import spiders.views.ObjectView;
+import spiders.views.SpiderView;
 
 /**
  * Spider - actor, can eat some bug, move, and be stunned by drop rain for a 
@@ -23,6 +25,7 @@ public abstract class Spider extends CobWebObject {
         super(cw);
         _life = 10;
         _stuned = false;
+        _view = new SpiderView(this);
     }
     
     // ------------------- life ------------------------
