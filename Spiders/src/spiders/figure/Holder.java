@@ -27,7 +27,7 @@ public abstract class Holder extends CobWebObject implements SpiderActionListene
      * Return fact, if holder is holding a spider.
      * @return true if holder is holding, false if not.
      */
-    protected boolean isHoldingSpider() {
+    public boolean isHoldingSpider() {
         return (_spider != null);
     }
     

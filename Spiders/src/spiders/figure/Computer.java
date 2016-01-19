@@ -1,6 +1,7 @@
 package spiders.figure;
 
 import java.util.ArrayList;
+import spiders.events.PlayerActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
 import spiders.navigations.Direction;
@@ -10,8 +11,12 @@ import spiders.navigations.Position;
  * Computer can think and move to food, which is nearest from him.
  * @author anhcx
  */
-public class Computer extends Spider {
+public class Computer extends Spider implements PlayerActionListener {
 
+    /**
+     *
+     * @param cw
+     */
     public Computer(CobWeb cw) {
         super(cw);
         _type = TypeObject.COMPUTER;
@@ -81,6 +86,22 @@ public class Computer extends Spider {
             ret.add(Direction.south());
         
         return ret;
+    }
+
+    @Override
+    public void playerMoved() {
+        boolean moved = false;
+        ArrayList<Direction> dir = think();
+        for (Direction d : dir) {
+            if (move(d)) {
+                System.err.println(name() + " move " + dir.toString());
+                moved = true;
+                break;
+            }
+        }
+
+        if (!moved)
+            System.err.println(name() + " can not move anyway");
     }
     
 }

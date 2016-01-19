@@ -34,8 +34,7 @@ public class RainFactory {
         for (int i = 1; i <= n; i++) {
             // create rain
             Rain r = new Rain(_gameModel.field());
-            
-            r.turnBack();
+            r.setPosition(_gameModel.field().getFreePosition(1));
             
             // add spider listener
             _gameModel.player().addSAL(r);

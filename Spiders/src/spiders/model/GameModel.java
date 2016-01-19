@@ -7,11 +7,10 @@ import spiders.figure.Computer;
 import spiders.figure.Player;
 import spiders.figure.Rain;
 import spiders.figure.Stone;
-import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
 /**
- * Game model, objects control logic game and play as computers.
+ * Game model, save all info about game and control logic game.
  * @author anhcx
  */
 public class GameModel implements PlayerActionListener {
@@ -63,7 +62,6 @@ public class GameModel implements PlayerActionListener {
         }
         
         setUpField();
-        
     }
     
     private void setUpField() {
@@ -87,12 +85,14 @@ public class GameModel implements PlayerActionListener {
         _player.setName("player");
         _player.setPosition(field().getFreePosition());
         field().addObject(_player);
-        _player.addPAL(this);
         
         for (Computer com : _coms) {
             com.setPosition(field().getFreePosition());
+            _player.addPAL(com);
             field().addObject(com);
         }
+        
+        _player.addPAL(this);
     }
     
     // ------------------ COMPUTER -------------------------
@@ -100,28 +100,6 @@ public class GameModel implements PlayerActionListener {
     
     public ArrayList<Computer> computers() {
         return _coms;
-    }
-    
-        
-    /**
-    * Direct every computer.
-    */
-    private void playAsComputer() {
-        // make computer move
-        for (Computer com : _coms) {
-            boolean moved = false;
-            ArrayList<Direction> dir = com.think();
-            for (Direction d : dir) {
-                if (com.move(d)) {
-                    System.err.println(com.name() + " move " + dir.toString());
-                    moved = true;
-                    break;
-                }
-            }
-            
-            if (!moved)
-                System.err.println(com.name() + " can not move anyway");
-        }
     }
     
     // ------------------ PLAYER -------------------------
@@ -187,7 +165,6 @@ public class GameModel implements PlayerActionListener {
 
     @Override
     public void playerMoved() {
-        playAsComputer();
         
         // check computer die and remove it
         checkGameOver();
@@ -196,6 +173,10 @@ public class GameModel implements PlayerActionListener {
         field().letBugGoOut();
         // let rain move down
         makeRainMove();
+        field().letRainOut();
+        
+        if (level().spin())
+            _rainFact.createRains(level().numberOfRain());
         
         for (GameEventListener gel : _gameListeners)
             gel.positionChanged();

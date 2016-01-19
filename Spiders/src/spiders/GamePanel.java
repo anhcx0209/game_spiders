@@ -213,6 +213,7 @@ public class GamePanel extends JPanel implements KeyListener {
             int x = GAP + CELL_SIZE*(i-1);
             g.drawLine(x, 0, x, height);
         }
+        
         // horizontal line
         for(int i = 1; i <= _model.field().size() + 1; i++) {
             int y = GAP + CELL_SIZE*(i-1);

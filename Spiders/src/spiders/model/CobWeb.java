@@ -2,6 +2,7 @@ package spiders.model;
 
 import java.util.ArrayList;
 import java.util.Random;
+import spiders.figure.Rain;
 import spiders.figure.Spider;
 import spiders.figure.SpiderFood;
 import spiders.figure.Stone;
@@ -56,15 +57,21 @@ public class CobWeb {
     }
     
     // ------------------- get free position --------
-    
+    private ArrayList<Position> freePosition(int i) {
+        ArrayList<Position> ret = new ArrayList<>();
+        for (int j = 1; j < _size + 1; j++) {
+            if (_mark[i][j] == 0)
+                ret.add(new Position(i, j));
+        }
+        
+        return ret;
+    }
     
     private ArrayList<Position> freePosition() {
         ArrayList<Position> ret = new ArrayList<>();
         for (int i = 1; i < _size + 1; i++) {
-            for (int j = 1; j < _size + 1; j++) {
-                if (_mark[i][j] == 0)
-                    ret.add(new Position(i, j));
-            }
+            ArrayList<Position> inrow = freePosition(i);
+            ret.addAll(inrow);
         }
         
         return ret;
@@ -85,6 +92,19 @@ public class CobWeb {
         
         return null;
     }
+    
+    public Position getFreePosition(int i) {
+        ArrayList<Position> freePos = freePosition(i);
+        
+        if (freePos.size() > 0) {
+            Random rand = new Random();
+            int n = rand.nextInt(freePos.size());
+            return freePos.get(n);
+        }
+        
+        return null;
+    }
+    
       
     // ------------------- objects on cobweb --------
     ArrayList<CobWebObject> _objects = new ArrayList<>();
@@ -99,7 +119,6 @@ public class CobWeb {
             return false;
         
         _objects.add(obj);
-        _mark[obj.position().row()][obj.position().column()]++;
         return true;
     }
     
@@ -234,6 +253,16 @@ public class CobWeb {
             if (sf.escape()) {
                 System.err.println("Bug in " + sf.position().toString() + " is gone.");
                 removeObject(sf);
+            }
+        }
+    }
+
+    void letRainOut() {
+        ArrayList<CobWebObject> rains = objects(TypeObject.RAIN);
+        for (CobWebObject obj : rains) {
+            Rain r = (Rain)obj;
+            if (r.position().row() == size() && !r.isHoldingFood() && !r.isHoldingSpider()) {
+                removeObject(r);
             }
         }
     }

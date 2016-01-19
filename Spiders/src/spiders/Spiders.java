@@ -242,14 +242,24 @@ public class Spiders extends JFrame {
     }
     
     // ----------------------- GAME EVENT LISTENER ------------------
-    public class RepaintByAction implements GameEventListener {
 
+    /**
+     * Observer.
+     */
+        public class RepaintByAction implements GameEventListener {
+
+        /**
+         * Repaint when some object change position.
+         */
         @Override
         public void positionChanged() {
             _stepInfo.setText("" + _panel.gameModel().step());
             _panel.repaint();
         }
 
+        /**
+         * Do action when life of player is 0.
+         */
         @Override
         public void gameOver() {
             String playername = (String)JOptionPane.showInputDialog(

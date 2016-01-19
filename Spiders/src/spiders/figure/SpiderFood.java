@@ -1,9 +1,9 @@
 package spiders.figure;
 
 import java.util.Random;
+import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
-import spiders.navigations.Position;
 
 /**
  * Bug, which is food of spider.
@@ -11,7 +11,7 @@ import spiders.navigations.Position;
  * They can be eaten by spider, spider will convert their value to life.
  * @author anhcx
  */
-public class SpiderFood extends CobWebObject {
+public class SpiderFood extends CobWebObject implements SpiderActionListener {
 
     /**
      * Generate a spider's food
@@ -56,7 +56,7 @@ public class SpiderFood extends CobWebObject {
     public boolean failIntoWeb() {
         Random rn = new Random();
         int factor = rn.nextInt(10) + 1;
-        if (factor == 1 || factor == 2 || factor == 3) 
+        if (factor == 1 || factor == 2 || factor == 3 || factor == 5 || factor == 6) 
             return true;
         else 
             return false;
@@ -97,6 +97,21 @@ public class SpiderFood extends CobWebObject {
                 return true;
         
         return false;
+    }
+
+    boolean _died = false;
+    
+    @Override
+    public void spiderMoving(Spider s) {
+        if (!_died) {
+            if (s.position().equals(position())) {
+                _died = true;
+                s.increaseLife(_size);
+                
+                System.err.println(s.name() + " ate " + this.name() + " at " +
+                        this.position());
+            }
+        } 
     }
     
 }

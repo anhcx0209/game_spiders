@@ -30,7 +30,7 @@ public class Rain extends Holder {
     private SpiderFood _food;
     private int _timeHoldFood;
     
-    private boolean isHoldingFood() {
+    public boolean isHoldingFood() {
         return (_food != null);
     }
     
@@ -42,20 +42,6 @@ public class Rain extends Holder {
     private void captureFood(SpiderFood f) {
         _food = f;
         _food.stun();
-    }
-    
-    public void turnBack() {
-        Random rand = new Random();
-        int j = 1 + rand.nextInt(cobweb().size());
-        setPosition(new Position(1, j));
-        
-        if (cobweb().have(TypeObject.PLAYER, _position) || cobweb().have(TypeObject.COMPUTER, _position)) {
-            _spider = cobweb().getSpider(_position);
-        }
-        
-        if (cobweb().have(TypeObject.FOOD, _position)) {
-            _food = cobweb().getFood(_position);
-        }
     }
     
     /**
