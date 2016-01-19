@@ -2,7 +2,6 @@ package spiders.model;
 
 import java.util.ArrayList;
 import java.util.Random;
-import spiders.figure.Rain;
 import spiders.figure.Spider;
 import spiders.figure.SpiderFood;
 import spiders.figure.Stone;
@@ -10,16 +9,20 @@ import spiders.model.CobWebObject.TypeObject;
 import spiders.navigations.Position;
 
 /**
- * Cobweb - where spider and bug move
- * size of cobweb = n x n
+ * Cobweb is game field with n x n position. 
+ * Spider, spider food, stone, rain are placed on it.
  * @author anhcx
  */
 public class CobWeb {
+    
     // ------------------ size --------------------
-    int _size;
+    private int _size;              // size of cobweb
+    int[][] _mark;                  // _mark[i][j] is number of objects in row i, column j.
     
     CobWeb(int s) {
         _size = s;
+        
+        // reset mark array
         _mark = new int[_size + 1][_size + 1];
         for (int i = 0; i < _size + 1; i++)
             for (int j = 0; j < _size + 1; j++)
@@ -27,22 +30,24 @@ public class CobWeb {
     }
     
     /**
+     * Getter of size.
      * @return size of cobweb.
      */
     public int size() {
         return _size;
     }
     
-    // ------------------- try to capture some food ----------------------
     /**
-     * Capture food form a mount of food.
-     * @param outFood - food outside the web.
+     * Capture food form a list of foods.
+     * @param foods - list of food outside the web.
      */
-    public void captureMoreFood(ArrayList<SpiderFood> outFood) {
+    void captureFoods(ArrayList<SpiderFood> foods) {
         int count = 0;
-        for (SpiderFood sf : outFood) {
+        for (SpiderFood sf : foods) {
             if (sf.failIntoWeb()) {
                 count++;
+                Position newPos = getFreePosition();
+                sf.setPosition(newPos);
                 addObject(sf);
             }
         }
@@ -51,7 +56,7 @@ public class CobWeb {
     }
     
     // ------------------- get free position --------
-    int[][] _mark;
+    
     
     private ArrayList<Position> freePosition() {
         ArrayList<Position> ret = new ArrayList<>();
@@ -232,4 +237,5 @@ public class CobWeb {
             }
         }
     }
+    
 }
