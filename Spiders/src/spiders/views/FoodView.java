@@ -21,7 +21,7 @@ public class FoodView extends ObjectView {
     public FoodView(SpiderFood obj) {
         super(obj);
         
-        if (obj.size() < 7)
+        if (obj.value() < 7)
             getImageFrom(FOOD_IMG_1);
         else 
             getImageFrom(FOOD_IMG_2);
@@ -32,7 +32,7 @@ public class FoodView extends ObjectView {
         drawImage(g, p);
         SpiderFood s = (SpiderFood)object();
         Point pos = p.coordPoint(object().position());
-        String str = "" + s.size();
+        String str = "" + s.value();
         g.setColor(Color.RED);
         g.drawString(str, pos.x + (5 * p.cellSize())/8, pos.y + (2 * p.cellSize())/4 + p.fontHeight());
     }

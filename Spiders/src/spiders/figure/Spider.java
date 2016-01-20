@@ -69,7 +69,7 @@ public abstract class Spider extends CobWebObject {
                 if (obj != null) {
                     SpiderFood food = (SpiderFood)obj;
                     if (!food.isStuned()) {
-                        increaseLife(food.size());
+                        increaseLife(food.value());
                         cobweb().removeObject(food);
                     } else {
                         eatStunFood = true;
