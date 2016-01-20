@@ -1,11 +1,13 @@
 package spiders.model;
 
+import spider.factory.RainFactory;
+import spider.factory.FoodFactory;
 import java.util.ArrayList;
-import spiders.events.GameEventListener;
+import spiders.events.GameListener;
+import spiders.events.GameModelActionListener;
 import spiders.events.PlayerActionListener;
 import spiders.figure.Computer;
 import spiders.figure.Player;
-import spiders.figure.Rain;
 import spiders.figure.Stone;
 import spiders.navigations.Position;
 
@@ -47,6 +49,7 @@ public class GameModel implements PlayerActionListener {
         _step = 0;
         _field = new CobWeb(l.baseSize());
         _level = l;
+        this.addGML(_field);
         
         // set range for position.
         Position.setHorizontalRange(1, l.baseSize());
@@ -120,33 +123,26 @@ public class GameModel implements PlayerActionListener {
         // check player
         if (player().life() == 0) {
             field().removeObject(_player);
-            for (GameEventListener gel : _gameListeners)
+            for (GameListener gel : _gameListeners)
                 gel.gameOver();
         }
     }
     
-    // ------------------- Rain --------------------------
-    private void makeRainMove() {
-        ArrayList<CobWebObject> rains = field().objects(CobWebObject.TypeObject.RAIN);
-        for (CobWebObject obj : rains) {
-            Rain r = (Rain)obj;
-            r.moveDown();
-        }
-    }
-    
-    
     // ------------------- FOOD FACTORY ------------------
     private FoodFactory _foodFact = new FoodFactory(this);
     
-    public void giveMoreFood() {
+    /**
+     * Generate more food and rain with a frequency.
+     */
+    public void makeMoreFoodAndRain() {
         // generate more food
         if (_level.spin() && field().foodPerSpider() < 1.0) {
             _field.captureFoods(_foodFact.createFood(_level.numberOfFoods()));
-            
-            // fire trigger to game panel
-            for (GameEventListener gel : _gameListeners)
-                gel.positionChanged();
         }
+        
+        // generate more rain
+        if (level().spin())
+            _rainFact.createRains(level().numberOfRain());
     }
     
     // ------------------- STEP --------------------------
@@ -159,7 +155,7 @@ public class GameModel implements PlayerActionListener {
     /**
      * Increase game step by 1.
      */
-    public void increaseStep() {
+    private void increaseStep() {
         _step++;
     }
 
@@ -169,25 +165,26 @@ public class GameModel implements PlayerActionListener {
         // check computer die and remove it
         checkGameOver();
         
-        // bugs are escaping
-        field().letBugGoOut();
-        // let rain move down
-        makeRainMove();
-        field().letRainOut();
-        
-        if (level().spin())
-            _rainFact.createRains(level().numberOfRain());
-        
-        for (GameEventListener gel : _gameListeners)
-            gel.positionChanged();
+        for (GameModelActionListener gml : _gamemodelListeners) 
+            gml.stepIncrease();
         
         increaseStep();
+        
+        for (GameListener gel : _gameListeners)
+            gel.needRepaint();
     }
     
     // ------------------- GAME LISTENER -----------------------------
-    private ArrayList<GameEventListener> _gameListeners = new ArrayList<>();
+    private ArrayList<GameListener> _gameListeners = new ArrayList<>();
     
-    public void addGEL(GameEventListener l) {
+    public void addGEL(GameListener l) {
         _gameListeners.add(l);
+    }
+    
+    // --------------------- Game model action listener ----------------
+    private ArrayList<GameModelActionListener> _gamemodelListeners = new ArrayList<>();
+    
+    public void addGML(GameModelActionListener l) {
+        _gamemodelListeners.add(l);
     }
 }

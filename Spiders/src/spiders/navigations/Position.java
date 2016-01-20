@@ -31,9 +31,19 @@ public class Position {
     }
     
     public static int lengthPath(Position a, Position b) {
-        int delta_x = a.row() - b.row();
-        int delta_y = a.column() - b.column();
-        return delta_x * delta_x + delta_y * delta_y;
+        int dx, dy;
+        if (a.row() > b.row())
+            dx = a.row() - b.row();
+        else 
+            dx = b.row() - a.row();
+        
+        if (a.column()> b.column())
+            dy = a.column()- b.column();
+        else 
+            dy = b.column() - a.column();
+        
+        
+        return dx + dy;
     }
     
     public static CellRange verticalRange() {

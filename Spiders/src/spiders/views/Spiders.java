@@ -27,7 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import spiders.events.GameEventListener;
+import spiders.events.GameListener;
 import spiders.model.GameModel;
 import spiders.model.Level;
 
@@ -246,13 +246,13 @@ public class Spiders extends JFrame {
     /**
      * Observer.
      */
-        public class RepaintByAction implements GameEventListener {
+        public class RepaintByAction implements GameListener {
 
         /**
          * Repaint when some object change position.
          */
         @Override
-        public void positionChanged() {
+        public void needRepaint() {
             _stepInfo.setText("" + _panel.gameModel().step());
             _panel.repaint();
         }

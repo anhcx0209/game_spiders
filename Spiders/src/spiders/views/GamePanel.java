@@ -83,25 +83,29 @@ public class GamePanel extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent ke) {
-        if(ke.getKeyCode() == KeyEvent.VK_UP) {         // move up
+        if(ke.getKeyCode() == KeyEvent.VK_UP) {         // makeMove up
             System.err.println("Key up pressed!");
-            _model.giveMoreFood();
-            _model.player().move(Direction.north());
+            _model.makeMoreFoodAndRain();
+            repaint();
+            _model.player().makeMove(Direction.north());
         }
-        else if(ke.getKeyCode() == KeyEvent.VK_DOWN) {  // move down
+        else if(ke.getKeyCode() == KeyEvent.VK_DOWN) {  // makeMove down
             System.err.println("Key down pressed!");
-            _model.giveMoreFood();
-            _model.player().move(Direction.south());
+            _model.makeMoreFoodAndRain();
+            repaint();
+            _model.player().makeMove(Direction.south());
         }
-        else if(ke.getKeyCode() == KeyEvent.VK_LEFT) {  // move left
+        else if(ke.getKeyCode() == KeyEvent.VK_LEFT) {  // makeMove left
             System.err.println("Key left pressed!");
-            _model.giveMoreFood();
-            _model.player().move(Direction.west());
+            _model.makeMoreFoodAndRain();
+            repaint();
+            _model.player().makeMove(Direction.west());
         }
-        else if(ke.getKeyCode() == KeyEvent.VK_RIGHT) { // move right
+        else if(ke.getKeyCode() == KeyEvent.VK_RIGHT) { // makeMove right
             System.err.println("Key right pressed!");
-            _model.giveMoreFood();
-            _model.player().move(Direction.east());
+            _model.makeMoreFoodAndRain();
+            repaint();
+            _model.player().makeMove(Direction.east());
         }
     }
 

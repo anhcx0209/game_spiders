@@ -93,9 +93,19 @@ public class Rain extends Holder implements GameModelActionListener {
 
     @Override
     public void stepIncrease() {
-        moveDown();
-        if (position().row() == cobweb().size())
+        if (!moveDownIsPossible())
             stopWork();
+        else 
+            moveDown();
+    }
+
+    private boolean moveDownIsPossible() {
+        boolean lastRow = position().row() == cobweb().size();
+        boolean haveStone = cobweb().have(Stone.class, position()) != null;
+        if (!haveStone && !lastRow)
+            return true;
+        else
+            return false;
     }
     
 }

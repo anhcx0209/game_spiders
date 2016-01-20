@@ -28,7 +28,6 @@ public class FoodFactory extends ObjectFactory{
             SpiderFood sf = new SpiderFood(model().field());
             
             if (sf.failIntoWeb()) {
-                sf.setName("Bug " + i);
                 ret.add(sf);
             }
         }
