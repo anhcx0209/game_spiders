@@ -1,22 +1,28 @@
 package spiders.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
+import spiders.events.GameModelActionListener;
+import spiders.figure.Computer;
 import spiders.figure.SpiderFood;
-import spiders.model.CobWebObject.TypeObject;
 import spiders.navigations.Position;
 
 /**
- * Cobweb - where spider and bug move
- * size of cobweb = n x n
+ * Cobweb is game field with n x n position. 
+ * Spider, spider food, stone, rain are placed on it.
  * @author anhcx
  */
-public class CobWeb {
+public class CobWeb implements GameModelActionListener {
+    
     // ------------------ size --------------------
-    int _size;
+    private final int _size;              // size of cobweb
+    int[][] _mark;                  // _mark[i][j] is number of objects in row i, column j.
     
     CobWeb(int s) {
         _size = s;
+        
+        // reset mark array
         _mark = new int[_size + 1][_size + 1];
         for (int i = 0; i < _size + 1; i++)
             for (int j = 0; j < _size + 1; j++)
@@ -24,22 +30,24 @@ public class CobWeb {
     }
     
     /**
+     * Getter of size.
      * @return size of cobweb.
      */
     public int size() {
         return _size;
     }
     
-    // ------------------- try to capture some food ----------------------
     /**
-     * Capture food form a mount of food.
-     * @param outFood - food outside the web.
+     * Capture food form a list of foods.
+     * @param foods - list of food outside the web.
      */
-    public void captureMoreFood(ArrayList<SpiderFood> outFood) {
+    void captureFoods(ArrayList<SpiderFood> foods) {
         int count = 0;
-        for (SpiderFood sf : outFood) {
+        for (SpiderFood sf : foods) {
             if (sf.failIntoWeb()) {
                 count++;
+                Position newPos = getFreePosition();
+                sf.setPosition(newPos);
                 addObject(sf);
             }
         }
@@ -48,15 +56,21 @@ public class CobWeb {
     }
     
     // ------------------- get free position --------
-    int[][] _mark;
+    private ArrayList<Position> freePosition(int i) {
+        ArrayList<Position> ret = new ArrayList<>();
+        for (int j = 1; j < _size + 1; j++) {
+            if (_mark[i][j] == 0)
+                ret.add(new Position(i, j));
+        }
+        
+        return ret;
+    }
     
     private ArrayList<Position> freePosition() {
         ArrayList<Position> ret = new ArrayList<>();
         for (int i = 1; i < _size + 1; i++) {
-            for (int j = 1; j < _size + 1; j++) {
-                if (_mark[i][j] == 0)
-                    ret.add(new Position(i, j));
-            }
+            ArrayList<Position> inrow = freePosition(i);
+            ret.addAll(inrow);
         }
         
         return ret;
@@ -77,6 +91,19 @@ public class CobWeb {
         
         return null;
     }
+    
+    public Position getFreePosition(int i) {
+        ArrayList<Position> freePos = freePosition(i);
+        
+        if (freePos.size() > 0) {
+            Random rand = new Random();
+            int n = rand.nextInt(freePos.size());
+            return freePos.get(n);
+        }
+        
+        return null;
+    }
+    
       
     // ------------------- objects on cobweb --------
     ArrayList<CobWebObject> _objects = new ArrayList<>();
@@ -91,7 +118,6 @@ public class CobWeb {
             return false;
         
         _objects.add(obj);
-        _mark[obj.position().row()][obj.position().column()]++;
         return true;
     }
     
@@ -113,10 +139,10 @@ public class CobWeb {
         double nFood = 0;
         double nSpider = 0;
         for (CobWebObject e : _objects) {
-            if (e.type() == TypeObject.FOOD) {
+            if (e instanceof SpiderFood) {
                 nFood = nFood + 1;
             }
-            if (e.type() == TypeObject.COMPUTER) {
+            if (e instanceof Computer) {
                 nSpider = nSpider + 1;
             }
         }
@@ -134,64 +160,36 @@ public class CobWeb {
         return _objects;
     }
     
-    /**
-     * Return exactly list of objects have a same type.
-     * @param type type of list.
-     * @return list of objects, which have same type.
-     */
-    public ArrayList<CobWebObject> objects(TypeObject type) {
-        ArrayList<CobWebObject> ret = new ArrayList<>();
-        for (CobWebObject e : _objects) {
-            if (e.type() == type) {
-                ret.add(e);
-            }
-        }
-        return ret;
-    }
-    
     // ----------------- check what have in a position -------------
     
-    /**
-     * Check existing of object in position.
-     * @param type - type of object
-     * @param pos - position
-     * @return true if exist object have type in position, false if not.
-     */
-    public boolean have(TypeObject type, Position pos) {
+    
+    public CobWebObject have(Class c, Position pos) {
         if (pos.isValid()) {
             for (CobWebObject obj : _objects) {
-                if (obj.position().equals(pos) && obj.type() == type) {
-                    return true;
+                if (obj.position().equals(pos) && obj.getClass() == c) {
+                    return obj;
                 }
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * Get food from a position.
-     * @param pos position
-     * @return food in position
-     */
-    public SpiderFood getFood(Position pos) {
-        for (CobWebObject obj : _objects) {
-            if (obj.position().equals(pos) && obj.type() == TypeObject.FOOD) {
-                return (SpiderFood)obj;
             }
         }
         
         return null;
     }
     
-    public void letBugGoOut() {
-        ArrayList<CobWebObject> bugs = objects(TypeObject.FOOD);
-        for (CobWebObject obj : bugs) {
-            SpiderFood sf = (SpiderFood)obj;
-            if (sf.escape()) {
-                System.err.println("Bug in " + sf.position().toString() + " is gone.");
-                removeObject(sf);
+    @Override
+    public void stepIncrease() {
+        cleanup();
+    }
+
+    private void cleanup() {
+        Iterator<CobWebObject> itr = objects().iterator();
+        while (itr.hasNext()) {
+            CobWebObject obj  = itr.next();
+            if (obj.isStop()) {
+                System.err.println("Object " + obj.position().toString() + " is removed.");
+                _mark[obj.position().row()][obj.position().column()]--;
+                itr.remove();
             }
         }
     }
+    
 }

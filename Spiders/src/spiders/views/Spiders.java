@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package spiders;
+package spiders.views;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -20,6 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import javax.swing.Box;
@@ -31,7 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import spiders.events.GameEventListener;
+import spiders.events.GameListener;
 import spiders.model.GameModel;
 import spiders.model.Level;
 
@@ -154,7 +150,10 @@ public class Spiders extends JFrame {
 
         box.add(new JLabel("Best result :"));
         box.add(Box.createHorizontalStrut(10));
-        _bestResultInfo.setText("?");
+        Set keys = _scoreBoard.keySet();
+        Object[] objs = keys.toArray();
+        String str = objs[objs.length - 1].toString();
+        _bestResultInfo.setText(str);
         box.add(Box.createHorizontalStrut(10));
         box.add(_bestResultInfo);
 
@@ -210,8 +209,8 @@ public class Spiders extends JFrame {
                 frame.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent we) {
-                        System.err.println("Writting..........");
                         frame.writeWhenClose();
+                        System.err.println("Save high scores successful.");
                     }
                 });
             }
@@ -243,14 +242,24 @@ public class Spiders extends JFrame {
     }
     
     // ----------------------- GAME EVENT LISTENER ------------------
-    public class RepaintByAction implements GameEventListener {
 
+    /**
+     * Observer.
+     */
+        public class RepaintByAction implements GameListener {
+
+        /**
+         * Repaint when some object change position.
+         */
         @Override
-        public void positionChanged() {
+        public void needRepaint() {
             _stepInfo.setText("" + _panel.gameModel().step());
             _panel.repaint();
         }
 
+        /**
+         * Do action when life of player is 0.
+         */
         @Override
         public void gameOver() {
             String playername = (String)JOptionPane.showInputDialog(
@@ -262,10 +271,10 @@ public class Spiders extends JFrame {
                     null,
                     null,
                     "new player");
-            
-            _scoreBoard.put(_panel.gameModel().step(), playername);
+            if (playername != null)
+                _scoreBoard.put(_panel.gameModel().step(), playername);
         }
-        
+
     }
     
     private void writeWhenClose() {

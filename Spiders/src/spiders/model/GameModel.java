@@ -1,65 +1,101 @@
 package spiders.model;
 
+import spider.factory.RainFactory;
+import spider.factory.FoodFactory;
 import java.util.ArrayList;
-import spiders.events.GameEventListener;
+import spiders.events.GameListener;
+import spiders.events.GameModelActionListener;
 import spiders.events.PlayerActionListener;
 import spiders.figure.Computer;
 import spiders.figure.Player;
-import spiders.navigations.Direction;
+import spiders.figure.Stone;
 import spiders.navigations.Position;
 
 /**
- * Game model, determine when player have to end game, control the computers...
+ * Game model, save all info about game and control logic game.
  * @author anhcx
  */
 public class GameModel implements PlayerActionListener {
     
-    private CobWeb _field;  // cobweb - where player play on
-    private Level _level;
+    private CobWeb _field;  // field - where player play on.
+    private Level _level;   // level of game.
     
     /**
-     * getter for _field
-     * @return cobweb - where game is based on
+     * This is getter, return field, where spiders are moving on.
+     * @return cobweb where game is based on.
      */
     public CobWeb field() {
         return _field;
     }
     
     /**
-     * @return level of game
+     * This is getter, return level of game is based on.
+     * @return level - difficulty of game.
      */
     public Level level() {
         return _level;
     }
     
+    // ---------------------- FACTORY ------------------------
+    private RainFactory _rainFact = new RainFactory(this);
+    
     /**
-     * create a game model with pre-defined level
-     * level = hard, medium and easy
-     * @param l pre-define level for game model
+     * This is constructor, create a game model with pre-defined level
+     * hard, easy or medium.
+     * @param l pre-define level for game model.
      */
     public GameModel(Level l) {
+        // create cobweb to play.
         _step = 0;
         _field = new CobWeb(l.baseSize());
+        _level = l;
+        this.addGML(_field);
+        
+        // set range for position.
         Position.setHorizontalRange(1, l.baseSize());
         Position.setVerticalRange(1, l.baseSize());
-        _level = l;
         
-        // create new player
+        // create player 
         _player = new Player(_field);
-        _player.setName("player");
-        _player.addPAL(this);
-        _field.addObject(_player);
         
-        // create computer 
-        for (int i = 0; i < _level.numberCom(); i++) {
+        for (int i = 0; i < _level.numberOfComputers(); i++) {
             Computer com = new Computer(_field);
             com.setName("Com" + i);
             _coms.add(com);
-            _field.addObject(com);
         }
-            
+        
+        setUpField();
+    }
+    
+    private void setUpField() {
+        _rainFact.createRains(level().numberOfRain());
+        
         // create food
-        _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
+        _field.captureFoods(_foodFact.createFood(_level.numberOfFoods()));
+        
+        // create stone
+        for (int i = 0; i < _level.numberOfStone(); i++) {
+            Stone s = new Stone(_field);
+            _field.addObject(s);
+            
+            // add listener
+            _player.addSAL(s);
+            for (Computer com : _coms)
+                com.addSAL(s);
+        }
+        
+        // set position player and computer
+        _player.setName("player");
+        _player.setPosition(field().getFreePosition());
+        field().addObject(_player);
+        
+        for (Computer com : _coms) {
+            com.setPosition(field().getFreePosition());
+            _player.addPAL(com);
+            field().addObject(com);
+        }
+        
+        _player.addPAL(this);
     }
     
     // ------------------ COMPUTER -------------------------
@@ -67,50 +103,6 @@ public class GameModel implements PlayerActionListener {
     
     public ArrayList<Computer> computers() {
         return _coms;
-    }
-    
-    /**
-    * Check computer if it die.
-    */
-    private void checkComDie() {
-        boolean[] trash = new boolean[_coms.size()];
-        
-        for (int i = 0; i < _coms.size(); i++) {
-            if (_coms.get(i).life() == 0) {
-                field().removeObject(_coms.get(i));
-                trash[i] = true;
-                
-                // fire trigger to game panel
-                for (GameEventListener gel : _gameListeners)
-                    gel.positionChanged();
-            }
-        }
-        
-        // remove from _coms
-        for (int i = trash.length - 1; i >= 0; i--)
-            if (trash[i])
-                _coms.remove(i);
-    }
-    
-    /**
-    * Direct every computer.
-    */
-    private void playAsComputer() {
-        // make computer move
-        for (Computer com : _coms) {
-            boolean moved = false;
-            ArrayList<Direction> dir = com.think();
-            for (Direction d : dir) {
-                if (com.move(d)) {
-                    System.err.println(com.name() + " move " + dir.toString());
-                    moved = true;
-                    break;
-                }
-            }
-            
-            if (!moved)
-                System.err.println(com.name() + " can not move anyway");
-        }
     }
     
     // ------------------ PLAYER -------------------------
@@ -121,9 +113,17 @@ public class GameModel implements PlayerActionListener {
     }
     
     private void checkGameOver() {
-        // check game over
+        
+        // check computers
+        for (Computer com : _coms) {
+            if (com.life() == 0)
+                field().removeObject(com);
+        }
+        
+        // check player
         if (player().life() == 0) {
-            for (GameEventListener gel : _gameListeners)
+            field().removeObject(_player);
+            for (GameListener gel : _gameListeners)
                 gel.gameOver();
         }
     }
@@ -131,15 +131,18 @@ public class GameModel implements PlayerActionListener {
     // ------------------- FOOD FACTORY ------------------
     private FoodFactory _foodFact = new FoodFactory(this);
     
-    private void spendMoreFood() {
+    /**
+     * Generate more food and rain with a frequency.
+     */
+    public void makeMoreFoodAndRain() {
         // generate more food
         if (_level.spin() && field().foodPerSpider() < 1.0) {
-            _field.captureMoreFood(_foodFact.createFood(_level.numberBug()));
-            
-            // fire trigger to game panel
-            for (GameEventListener gel : _gameListeners)
-                gel.positionChanged();
+            _field.captureFoods(_foodFact.createFood(_level.numberOfFoods()));
         }
+        
+        // generate more rain
+        if (level().spin())
+            _rainFact.createRains(level().numberOfRain());
     }
     
     // ------------------- STEP --------------------------
@@ -152,35 +155,36 @@ public class GameModel implements PlayerActionListener {
     /**
      * Increase game step by 1.
      */
-    public void increaseStep() {
+    private void increaseStep() {
         _step++;
     }
 
     @Override
     public void playerMoved() {
-        playAsComputer();
-        
-        spendMoreFood();
         
         // check computer die and remove it
-        checkComDie();
         checkGameOver();
         
-        // bugs are escaping
-        field().letBugGoOut();
+        for (GameModelActionListener gml : _gamemodelListeners) 
+            gml.stepIncrease();
         
-        for (GameEventListener gel : _gameListeners)
-            gel.positionChanged();
+        increaseStep();
+        
+        for (GameListener gel : _gameListeners)
+            gel.needRepaint();
     }
     
     // ------------------- GAME LISTENER -----------------------------
-    private ArrayList<GameEventListener> _gameListeners = new ArrayList<>();
+    private ArrayList<GameListener> _gameListeners = new ArrayList<>();
     
-    public void addGEL(GameEventListener l) {
+    public void addGEL(GameListener l) {
         _gameListeners.add(l);
     }
     
-    public void removeGEL(GameEventListener l) {
-        _gameListeners.remove(l);
+    // --------------------- Game model action listener ----------------
+    private ArrayList<GameModelActionListener> _gamemodelListeners = new ArrayList<>();
+    
+    public void addGML(GameModelActionListener l) {
+        _gamemodelListeners.add(l);
     }
 }

@@ -1,9 +1,10 @@
 package spiders.figure;
 
 import java.util.Random;
+import spiders.events.GameModelActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
-import spiders.navigations.Position;
+import spiders.views.FoodView;
 
 /**
  * Bug, which is food of spider.
@@ -11,7 +12,7 @@ import spiders.navigations.Position;
  * They can be eaten by spider, spider will convert their value to life.
  * @author anhcx
  */
-public class SpiderFood extends CobWebObject {
+public class SpiderFood extends CobWebObject implements GameModelActionListener {
 
     /**
      * Generate a spider's food
@@ -19,71 +20,84 @@ public class SpiderFood extends CobWebObject {
      */
     public SpiderFood(CobWeb cw) {
         super(cw);
-        _type = TypeObject.FOOD;
         makeFactor();
+        _view = new FoodView(this);
     }
     
-    
-    // ------------------ size ----------------------
+    // ------------------ SIZE ----------------------
     // size of food, it is value life will be increase when spider eat
-    private int _size = 6;          
+    private int _value;          
     
-    public int size() {
-        return _size;
+    /**
+     * Get size of spider foods.
+     * @return
+     */
+    public int value() {
+        return _value;
+    }
+    
+    // ------------------ ACTION ---------------------
+    
+    /**
+     * Bug can fall in to web an be sticked there.
+     * @return action successful or not.
+     */
+    public boolean failIntoWeb() {
+        return rollDice(_factorFallToWeb);
     }
     
     /**
-     * bug fall in to web an be sticked there.
-     * @return action successful or not
+     * When game step has increased, try to escape from the cobweb.
      */
-    public boolean failIntoWeb() {
-        Random rn = new Random();
-        int factor = rn.nextInt(10) + 1;
-        if (factor == 1 || factor == 2 || factor == 3) {
-            Position pos = cobweb().getFreePosition();
-            if (pos != null) {
-                setPosition(pos);
-                return true;
-            } else 
-                return false;
+    @Override
+    public void stepIncrease() {
+        if (rollDice(_factorEscape)) {
+            stopWork();
         }
-        else 
-            return false;
     }
     
-    // --------------------- FACTOR TO ESCAPE -------------------
-
+    // ----------------- FACTOR TO ESCAPE AND FALL TO WEB ----------------
+    int[] _factorFallToWeb;
     int[] _factorEscape;
     
     private void makeFactor() {
-        _factorEscape = new int[_size]; // 10 % gen food
-        
-        boolean[] flag = new boolean[100];
         Random rn = new Random();
-        for (int i = 0; i < _size; i++) {
+        _value = rn.nextInt(11) + 1;
+        
+        _factorEscape = randomArray(_value); // 10 % gen food.
+        _factorFallToWeb = randomArray(100 - _value); // 90% fall in to web.
+    }
+
+    private int[] randomArray(int n) {
+        int[] array = new int[n];
+        Random rn = new Random();
+        boolean[] isChoosen = new boolean[100];
+        
+        for (int i = 0; i < n; i++) {
             boolean ok = true;
+            
             while (ok) {
-                int k = rn.nextInt(100);
-                if (!flag[k]) {
-                    flag[k] = true;
-                    _factorEscape[i] = k;
+                int x = rn.nextInt(100);
+                if (!isChoosen[x]) {
+                    isChoosen[x] = true;
+                    array[i] = x;
                     ok = false;
                 }
             }
         }
+        
+        return array;
     }
     
-    /**
-     * Bug try to escape.
-     * @return successful or not.
-     */
-    public boolean escape() {
+    private boolean rollDice(int[] array) {
         Random rand = new Random();
         int x = rand.nextInt(100);
-        for (int i = 0; i < _factorEscape.length; i++)
-            if (_factorEscape[i] == x)
+        for (int i = 0; i < array.length; i++)
+            if (array[i] == x) {
                 return true;
+            }
         
         return false;
     }
+    
 }
