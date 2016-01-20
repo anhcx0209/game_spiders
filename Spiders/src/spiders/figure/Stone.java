@@ -15,7 +15,6 @@ public class Stone extends Holder {
      */
     public Stone(CobWeb cw) {
         super(cw);
-        _type = TypeObject.STONE;
         _timeHoldSpider = 2;
         _position = cobweb().getFreePosition();
         _spider = null;

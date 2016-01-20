@@ -1,7 +1,8 @@
 package spiders.figure;
 
-import java.util.Random;
+import spiders.events.GameModelActionListener;
 import spiders.model.CobWeb;
+import spiders.model.CobWebObject;
 import spiders.navigations.Direction;
 import spiders.navigations.Position;
 
@@ -11,7 +12,7 @@ import spiders.navigations.Position;
  * When go to last row, it will disappear.
  * @author anhcx
  */
-public class Rain extends Holder {
+public class Rain extends Holder implements GameModelActionListener {
 
     /**
      * Create a drop of rain.
@@ -19,7 +20,6 @@ public class Rain extends Holder {
      */
     public Rain(CobWeb cw) {
         super(cw);
-        _type = TypeObject.RAIN;
         _timeHoldSpider = 3;
         _spider = null;
         _timeHoldFood = 2;
@@ -58,15 +58,23 @@ public class Rain extends Holder {
                 setPosition(newPos);
             
             // if rain move to pos of player or computer - spider on web.
-            if (cobweb().have(TypeObject.PLAYER, newPos) || cobweb().have(TypeObject.COMPUTER, newPos)) {
-                captureSpider(cobweb().getSpider(newPos));
+            CobWebObject c = cobweb().have(Computer.class, newPos);
+            if (c != null) {
+                captureSpider((Computer)c);
+                System.err.println(_spider.name() + " is stuned at " + position().toString());
+            }
+            
+            CobWebObject p = cobweb().have(Spider.class, newPos);
+            if (p != null) {
+                captureSpider((Player)p);
                 System.err.println(_spider.name() + " is stuned at " + position().toString());
             }
             
             // if rain move to pos of food.
-            if (cobweb().have(TypeObject.FOOD, newPos)) {
+            CobWebObject f = cobweb().have(SpiderFood.class, newPos);
+            if (f != null) {
                 // stun it;
-                captureFood(cobweb().getFood(newPos));
+                captureFood((SpiderFood)f);
                 System.err.println(_food.name() + " is stuned at " + position().toString());
             }
         } else {
@@ -81,6 +89,13 @@ public class Rain extends Holder {
                 }
             }
         }
+    }
+
+    @Override
+    public void stepIncrease() {
+        moveDown();
+        if (position().row() == cobweb().size())
+            stopWork();
     }
     
 }

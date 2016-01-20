@@ -55,7 +55,7 @@ public abstract class Holder extends CobWebObject implements SpiderActionListene
      * @param s spider just has move.
      */
     @Override
-    public void spiderMoving(Spider s) {
+    public void spiderMoved(Spider s) {
         // if stone is busy to detaine someone
         if (isHoldingSpider()) {
             // if spider is "someone"
