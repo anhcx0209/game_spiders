@@ -1,7 +1,7 @@
 package spiders.figure;
 
 import java.util.ArrayList;
-import spiders.events.GameEventListener;
+import spiders.events.GameListener;
 import spiders.events.SpiderActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
@@ -17,52 +17,40 @@ import spiders.views.SpiderView;
 public abstract class Spider extends CobWebObject {
 
     /**
-     * generate a spider with his cobweb
-     * @param cw - cobweb, which spiders move on
+     * Constructor with a cobweb.
+     * @param cw cobweb, where object will play on.
      */
     public Spider(CobWeb cw) {
         super(cw);
         _life = 10;
-        _stuned = false;
         _view = new SpiderView(this);
     }
     
-    // ------------------- life ------------------------
-    private int _life;      // store life, when life = 0, spider die
+    // ------------------- LIFE ------------------------
+    private int _life;      
     
+    /**
+     * Get life of spider.
+     * @return current life of spider.
+     */
     public int life() {
         return _life;
     }
             
     /**
-     * decrease spider's life
-     * @param amount - number of life is decreased
+     * Decrease spider's life.
+     * @param amount - number of life is decreased.
      */
-    private void decreaseLife(int amount) {
+    protected void decreaseLife(int amount) {
         _life -= amount;
     }
     
     /**
-     * increase spider's life
-     * @param amount - number of life is added
+     * Increase spider's life.
+     * @param amount - number of life is added.
      */
     private void increaseLife(int amount) {
         _life += amount;
-    }
-    
-    // --------------- Stuned time ------------------------
-    private boolean _stuned;
-    
-    public boolean isStuned() {
-        return _stuned;
-    }
-    
-    public void unStun() {
-        _stuned = false;
-    }
-    
-    public void stun() {
-        _stuned = true;
     }
     
     /**
@@ -70,15 +58,16 @@ public abstract class Spider extends CobWebObject {
      * @param direct direction to moving.
      * @return moved or not.
      */
-    public boolean moveTo(Direction direct) {
+    public boolean tryMovingTo(Direction direct) {
         if (this.life() > 0) {
             if (moveIsPossible(direct)) {
                 Position newPos = position().next(direct);
                 boolean eatStunFood = false;
                 
                 // eating
-                if (cobweb().have(TypeObject.FOOD, newPos)) {
-                    SpiderFood food = cobweb().getFood(newPos);
+                CobWebObject obj = cobweb().have(SpiderFood.class, newPos);
+                if (obj != null) {
+                    SpiderFood food = (SpiderFood)obj;
                     if (!food.isStuned()) {
                         increaseLife(food.size());
                         cobweb().removeObject(food);
@@ -96,12 +85,12 @@ public abstract class Spider extends CobWebObject {
                 // Лог
                 System.err.println(name() + " moved to: " + position().toString());
                 
-                for (GameEventListener gel : _gameListeners) {
-                    gel.positionChanged();
+                for (GameListener gel : _gameListeners) {
+                    gel.needRepaint();
                 }
                 
                 for (SpiderActionListener sal : _actionListeners) {
-                    sal.spiderMoving(this);
+                    sal.spiderMoved(this);
                 }
                 
                 return true;
@@ -110,11 +99,16 @@ public abstract class Spider extends CobWebObject {
         return false;
     }
     
-    private boolean moveIsPossible(Direction direct) {
+    /**
+     * Check this move can be realize or not.
+     * @param direct - direction of move.
+     * @return true if move possible, otherwise false.
+     */
+    protected boolean moveIsPossible(Direction direct) {
         Position newPos = position().next(direct);
         if (newPos.isValid()) {
-            boolean haveCom = cobweb().have(TypeObject.COMPUTER, newPos);
-            boolean havePlayer = cobweb().have(TypeObject.PLAYER, newPos);
+            boolean haveCom = cobweb().have(Computer.class, newPos) != null;
+            boolean havePlayer = cobweb().have(Player.class, newPos) != null;
             if (!haveCom && !havePlayer)
                 return true;
         }
@@ -123,13 +117,13 @@ public abstract class Spider extends CobWebObject {
     }
     
     // ------------------- GAME LISTENER -----------------------------
-    private ArrayList<GameEventListener> _gameListeners = new ArrayList<>();
+    private ArrayList<GameListener> _gameListeners = new ArrayList<>();
     
-    public void addGEL(GameEventListener l) {
+    public void addGEL(GameListener l) {
         _gameListeners.add(l);
     }
     
-    public void removeGEL(GameEventListener l) {
+    public void removeGEL(GameListener l) {
         _gameListeners.remove(l);
     }
     

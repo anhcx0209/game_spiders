@@ -1,6 +1,7 @@
 package spiders.figure;
 
 import java.util.ArrayList;
+import java.util.Random;
 import spiders.events.PlayerActionListener;
 import spiders.model.CobWeb;
 import spiders.model.CobWebObject;
@@ -14,76 +15,105 @@ import spiders.navigations.Position;
 public class Computer extends Spider implements PlayerActionListener {
 
     /**
-     *
-     * @param cw
+     * Constructor with a cobweb.
+     * @param cw cobweb, where object will play on.
      */
     public Computer(CobWeb cw) {
         super(cw);
-        _type = TypeObject.COMPUTER;
     }
     
     /**
      * Find the nearest food from him.
-     * @return direction to nearest food.
+     * @return list of direction to nearest food.
      */
-    public ArrayList<Direction> think() {
+    public ArrayList<Direction> findTheNearestFood() {
         
-        ArrayList<Direction> ret = new ArrayList<>();
         Position myPos = position();
         Position bestPos = null;
         int min = 999999;
-        // get all object is food
-        ArrayList<CobWebObject> listFood = cobweb().objects(TypeObject.FOOD);
         
         // find the min lenght
-        for (CobWebObject e : listFood) {
-            int cur_length = Position.lengthPath(myPos, e.position());
-            if (cur_length < min) 
-                bestPos = e.position();
+        for (CobWebObject e : cobweb().objects()) {
+            if (e instanceof SpiderFood) {
+                int cur_length = Position.lengthPath(myPos, e.position());
+                System.err.println(name() + " see: " + e.position().toString() + " length " + cur_length);
+                if (cur_length < min) {
+                    bestPos = e.position();
+                    min = cur_length;
+                }
+            }
         }
         
         // in case best pos is found, return a list of moveable to target
         if (bestPos != null) {
             System.err.println(name() + " dertemined target: " + bestPos.toString());
-            return wayTo(myPos, bestPos);
-        } else {
-            System.err.println(name() + " moved random!");
-            return randomDirection();
-        }
+            return getDirectionTo(myPos, bestPos);
+        } else
+            return null;
     }
     
-    private ArrayList<Direction> randomDirection() {
+    private Direction randomDirection() {
         ArrayList<Direction> ret = new ArrayList<>();
         
         Direction west = Direction.west();
-        ret.add(west);
-        Direction east = Direction.east();
-        ret.add(east);
-        Direction north = Direction.north();
-        ret.add(north);
-        Direction south = Direction.south();
-        ret.add(south);
+        if (moveIsPossible(west))
+            ret.add(west);
         
-        return ret;
+        Direction east = Direction.east();
+        if (moveIsPossible(east))
+            ret.add(east);
+        
+        Direction north = Direction.north();
+        if (moveIsPossible(north))
+            ret.add(north);
+        
+        Direction south = Direction.south();
+        if (moveIsPossible(south))
+            ret.add(north);
+        
+        if (ret.size() > 0) {
+            Random rand = new Random();
+            int n = rand.nextInt(ret.size());
+            return ret.get(n);
+        } else 
+            return null;
     }
     
-    private ArrayList<Direction> wayTo(Position a, Position b) {
+    private ArrayList<Direction> getDirectionTo(Position start, Position finish) {
         ArrayList<Direction> ret = new ArrayList<>();
         
-        int delta_row = a.row() - b.row();
-        int delta_col = a.column() - b.column();
+        int delta_row = start.row() - finish.row();
+        int delta_col = start.column() - finish.column();
         
-        if (delta_col > 0)
-            ret.add(Direction.west());
+        if (delta_col == 0) {
+            if (delta_row > 0)
+                ret.add(Direction.north());
 
-        if (delta_col < 0)
-            ret.add(Direction.east());
+            if (delta_row < 0)
+                ret.add(Direction.south());
+        }
+        
+        if (delta_row == 0) {
+            if (delta_col > 0)
+                ret.add(Direction.west());
 
-        if (delta_row > 0)
-            ret.add(Direction.north());
+            if (delta_col < 0)
+                ret.add(Direction.east());
+        }
+        
+        if (delta_col != 0 && delta_row != 0) {
+            if (delta_col > 0)
+                ret.add(Direction.west());
 
-        if (delta_row < 0)
-            ret.add(Direction.south());
+            if (delta_col < 0)
+                ret.add(Direction.east());
+            
+            if (delta_row > 0)
+                ret.add(Direction.north());
+
+            if (delta_row < 0)
+                ret.add(Direction.south());
+        }
         
         return ret;
     }
@@ -91,17 +121,23 @@ public class Computer extends Spider implements PlayerActionListener {
     @Override
     public void playerMoved() {
         boolean moved = false;
-        ArrayList<Direction> dir = think();
-        for (Direction d : dir) {
-            if (moveTo(d)) {
-                System.err.println(name() + " move " + dir.toString());
+        ArrayList<Direction> dir = findTheNearestFood();
+        if (dir == null) {
+            Direction randDir = randomDirection();
+            if (randDir != null) {
+                tryMovingTo(randDir);
                 moved = true;
-                break;
+            }
+        } else {
+            for (Direction d : dir) {
+                if (tryMovingTo(d)) {
+                    moved = true;
+                    break;
+                }
             }
         }
 
         if (!moved)
-            System.err.println(name() + " can not move anyway");
+            System.err.println(name() + " can not move anyway.");
     }
-    
 }
